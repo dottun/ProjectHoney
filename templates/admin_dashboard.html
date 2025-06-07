@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} - Admin</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .admin-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+        }
+        .footer {
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: auto;
+        }
+        .table-responsive {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{{ url_for('home') }}">AI Honeypot</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container flex-grow-1">
+        <div class="admin-container">
+            <h2 class="mb-4">Admin Dashboard</h2>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <p>Welcome, Administrator! Here you can monitor system activities, manage settings, and view honeypot logs.</p>
+
+            <h4 class="mt-4">Currently Blocked IPs:</h4>
+            {% if blocked_ips %}
+            <ul class="list-group">
+                {% for ip, until in blocked_ips.items() %}
+                    <li class="list-group-item"><strong>{{ ip }}</strong> (Blocked Until: {{ until }})</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>No IPs are currently blocked.</p>
+            {% endif %}
+
+            <h4 class="mt-4">Registered Users:</h4>
+            {% if all_users %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Admin</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in all_users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info" disabled>Edit</button>
+                                <button class="btn btn-sm btn-danger" disabled>Delete</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No users registered yet.</p>
+            {% endif %}
+
+            <h4 class="mt-4">Recent Attack Logs (Last 100):</h4>
+            {% if all_attacks %}
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>IP</th>
+                            <th>Vector</th>
+                            <th>Path</th>
+                            <th>Method</th>
+                            <th>AI Pred.</th>
+                            <th>RL Action</th>
+                            <th>Location</th>
+                            <th>Reputation</th>
+                            <th>Payload</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attack in all_attacks %}
+                        <tr>
+                            <td>{{ attack.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>{{ attack.ip_address }}</td>
+                            <td>{{ attack.attack_vector }}</td>
+                            <td>{{ attack.path }}</td>
+                            <td>{{ attack.method }}</td>
+                            <td>{{ attack.ai_prediction }}</td>
+                            <td>{{ attack.rl_action_taken }}</td>
+                            <td>
+                                {% if attack.geolocation_data %}
+                                    {{ attack.geolocation_data.city }}, {{ attack.geolocation_data.country }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if attack.ip_reputation_data %}
+                                    {{ 'Malicious' if attack.ip_reputation_data.is_malicious else 'Clean' }} ({{ attack.ip_reputation_data.reason }})
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td style="max-width: 200px; overflow-x: auto; font-family: monospace; font-size: 0.8em;">{{ attack.payload }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No attack logs recorded yet.</p>
+            {% endif %}
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 AI Honeypot. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
