@@ -110,6 +110,8 @@ def get_country_from_ip(ip_address):
     else:
         return 'Unknown' # Default for others
 
+ 
+
 # Configure SQLite database (easy for simplified version)
 app.config['SECRET_KEY'] = 'CHEGBE@1234' # <--- Make sure this is a strong, unique key for production
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -158,8 +160,10 @@ def honeypot_trap(f):
         app.logger.info(f"Honeypot trap triggered for IP: {user_ip}")
 
         # Perform GeoIP and IP reputation lookups
-        geolocation_info = get_geolocation_info(user_ip) # Assuming this function exists
-        ip_reputation = get_ip_reputation(user_ip) # Assuming this function exists
+        # Use the correctly defined functions from later in your file
+        geolocation_info = get_geolocation_data(user_ip, app.logger, app.config.get('IPINFO_API_KEY'))
+        ip_reputation = check_ip_reputation(user_ip, app.logger)
+
 
         # Check if IP is blocked before processing further
         if is_ip_blocked(user_ip):
@@ -693,73 +697,55 @@ def signup():
     return render_template('signup.html', title='Sign Up')
 
 
+# app.py
+
+# ... (your existing imports, app setup, utility functions, etc.) ...
 
 @app.route("/login", methods=['GET', 'POST'])
-@honeypot_trap
-@login_required # <--- Corrected spelling
+@honeypot_trap # Keep this for honeypot functionality on the login page
 @limiter.limit("3 per minute") # Keep your rate limiting
 def login():
+    """
+    Handles user login attempts.
+    The @honeypot_trap decorator will handle all security monitoring,
+    detection, and deception actions for requests to this route.
+    """
+    # If the user is already authenticated (logged in), redirect them to the dashboard.
+    # This check happens first, as Flask-Login allows authenticated users to access login page
+    # but it's good UX to redirect them away.
     if current_user.is_authenticated:
-        # If user is already logged in, redirect them
+        app.logger.info(f"Authenticated user {current_user.username} tried to access /login, redirecting to dashboard.")
         return redirect(url_for('dashboard'))
 
-    # Get IP and reputation data regardless of GET or POST for logging/detection
-    user_ip = request.remote_addr
-    ip_reputation = check_ip_reputation(user_ip, app.logger)
-    # Geolocation data might also be useful for logging here, though not directly used in RL state
-    geolocation_data = get_geolocation_data(user_ip, app.logger, app.config['IPINFO_API_KEY'])
-
-
+    # If this is a POST request (form submission for login)
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        remember_me = request.form.get('remember_me') == 'on'
+        username = request.form.get('username') # Use .get() for safer access
+        password = request.form.get('password')
+        remember_me = request.form.get('remember_me') == 'on' # Check if 'remember me' checkbox was ticked
 
-        # Prepare request_data for detection and logging
-        request_data = {
-            'ip_address': user_ip,
-            'user_agent': request.headers.get('User-Agent', ''),
-            'path': request.path,
-            'method': request.method,
-            'payload': json.dumps(request.form.to_dict()), # For POST, payload is typically form data
-            'referer': request.headers.get('Referer', ''), # Include referer
-            'headers': dict(request.headers)
-        }
-
-        # Call the updated detect_and_log_attack and capture its return values
-        ai_prediction, rl_action_taken = detect_and_log_attack(request_data, user_ip, ip_reputation)
-
-        # Handle immediate RL actions based on prediction during login attempt
-        if ai_prediction == "Malicious" or ai_prediction == "Suspicious":
-            app.logger.warning(f"AI Prediction: {ai_prediction} for IP: {user_ip} during login attempt. Action: {rl_action_taken}")
-            flash(f"Security Alert during login! AI detected {ai_prediction} activity. Action taken: {rl_action_taken}", 'warning')
-
-            if rl_action_taken == "block_ip":
-                block_ip(user_ip, duration_minutes=30)
-                flash('Your IP has been temporarily blocked.', 'danger')
-                return redirect(url_for('blocked')) # Redirect to a generic blocked page
-            elif rl_action_taken == "redirect_to_fake_page":
-                flash('You have been redirected to a deceptive page.', 'warning')
-                return redirect(url_for('fake_login_page')) # Needs a fake_login_page route/template
-            elif rl_action_taken == "serve_fake_error":
-                flash('An unexpected error occurred (simulated).', 'danger')
-                return render_template('fake_error.html') # Needs a fake_error.html template
-
-        # Continue with standard login logic ONLY if no immediate RL action was taken
         user = User.query.filter_by(username=username).first()
 
+        # Verify username and password
         if user and bcrypt.check_password_hash(user.password_hash, password):
-            login_user(user, remember=remember_me)
-            app.logger.info(f"User logged in: {username}")
-            flash('Logged in successfully!', 'success')
+            login_user(user, remember=remember_me) # Log the user in
+            app.logger.info(f"Successful login for user: {username} from IP: {request.remote_addr}")
+            flash('Logged in successfully!', 'success') # Show success message
+
+            # Redirect to the 'next' page if Flask-Login stored one, otherwise to dashboard
             next_page = request.args.get('next')
             return redirect(next_page or url_for('dashboard'))
         else:
-            app.logger.warning(f"Failed login attempt for username: {username}")
-            flash('Invalid username or password.', 'danger')
+            # Failed login attempt
+            app.logger.warning(f"Failed login attempt for username: {username} from IP: {request.remote_addr}")
+            flash('Invalid username or password.', 'danger') # Show error message
+            # Re-render the login form with an error, retaining username for convenience
+            return render_template('login.html', title='Login', username=username)
 
-    # For GET requests to /login, just render the form
+    # For GET requests to /login (when the user first visits the login page)
+    # Just render the empty login form.
     return render_template('login.html', title='Login')
+
+# ... (your other routes like /dashboard, /logout, etc.) ...
 
 @app.route("/logout")
 @login_required
