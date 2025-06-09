@@ -3,62 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - Admin</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .navbar {
-            margin-bottom: 20px;
-        }
-        .admin-container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            background-color: #ffffff;
-        }
-        .footer {
-            background-color: #343a40;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            margin-top: auto;
-        }
-        .table-responsive {
-            margin-top: 20px;
-        }
-    </style>
-</head>
+    <title>AI Honeypot Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+    </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ url_for('home') }}">AI Honeypot</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+    <div class="container">
+        <nav class="sidebar">
+            <div class="admin-section">
+                <h3>ADMIN</h3>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item active">
+                    <a href="{{ url_for('admin_dashboard') }}">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Dashboard</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin</a>
+                    <a href="{{ url_for('attack_logs') }}"> {# This should link to your dedicated logs page #}
+                        <span class="nav-icon">🔗</span>
+                        <span class="nav-text">Interactions</span>
+                    </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    <a href="{{ url_for('admin_dashboard') }}"> {# Or a dedicated alerts page if you make one later #}
+                        <span class="nav-icon">🔔</span>
+                        <span class="nav-text">Alerts</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('logout') }}"> {# Example for a logout link #}
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-text">Logout</span>
+                    </a>
                 </li>
             </ul>
-        </div>
-    </nav>
+        </nav>
 
-    <div class="container flex-grow-1">
-        <div class="admin-container">
-            <h2 class="mb-4">Admin Dashboard</h2>
+        <main class="main-content">
+            <header class="header">
+                <h1>AI HONEYPOT DASHBOARD</h1>
+                <button class="menu-toggle">☰</button>
+            </header>
+
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
@@ -67,115 +55,180 @@
                 {% endif %}
             {% endwith %}
 
-            <p>Welcome, Administrator! Here you can monitor system activities, manage settings, and view honeypot logs.</p>
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>INTERACTIONS</h3>
+                    <div class="stat-number">{{ total_interactions | default(0) }}</div> {# Dynamic Data #}
+                </div>
+                <div class="stat-card">
+                    <h3>UNIQUE IPs</h3>
+                    <div class="stat-number">{{ unique_ips | default(0) }}</div> {# Dynamic Data #}
+                </div>
+                <div class="stat-card">
+                    <h3>ALERTS</h3>
+                    <div class="stat-number">{{ total_alerts | default(0) }}</div> {# Dynamic Data #}
+                </div>
+            </section>
 
-            <h4 class="mt-4">Currently Blocked IPs:</h4>
-            {% if blocked_ips %}
-            <ul class="list-group">
-                {% for ip, until in blocked_ips.items() %}
-                    <li class="list-group-item"><strong>{{ ip }}</strong> (Blocked Until: {{ until }})</li>
-                {% endfor %}
-            </ul>
-            {% else %}
-            <p>No IPs are currently blocked.</p>
-            {% endif %}
+            <section class="dashboard-grid">
+                <div class="chart-container">
+                    <h3>Interaction Activity (Last 24 Hours)</h3>
+                    <canvas id="attacksOverTimeChart"
+                            data-labels="{{ attack_chart_labels }}"
+                            data-data="{{ attack_chart_data }}"
+                    ></canvas>
+                </div>
 
-            <h4 class="mt-4">Registered Users:</h4>
-            {% if all_users %}
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Admin</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for user in all_users %}
-                        <tr>
-                            <td>{{ user.id }}</td>
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-info" disabled>Edit</button>
-                                <button class="btn btn-sm btn-danger" disabled>Delete</button>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p>No users registered yet.</p>
-            {% endif %}
+                <div class="geo-container">
+                        <h3>Geographic Distribution</h3>
+                        <div class="geo-list">
+                            {% if geographic_distribution_data %}
+                                {% for geo_item in geographic_distribution_data %}
+                                <div class="geo-item">
+                                    <span class="country">{{ geo_item.country }}</span>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: {{ geo_item.width }}"></div>
+                                    </div>
+                                    <span class="percentage">{{ geo_item.percentage }}</span>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <p style="color: #cccccc;">No geographic data available yet.</p>
+                            {% endif %}
+                        </div>
+                    </div>
 
-            <h4 class="mt-4">Recent Attack Logs (Last 100):</h4>
-            {% if all_attacks %}
-            <div class="table-responsive">
-                <table class="table table-striped table-bordered table-sm">
-                    <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>IP</th>
-                            <th>Vector</th>
-                            <th>Path</th>
-                            <th>Method</th>
-                            <th>AI Pred.</th>
-                            <th>RL Action</th>
-                            <th>Location</th>
-                            <th>Reputation</th>
-                            <th>Payload</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for attack in all_attacks %}
-                        <tr>
-                            <td>{{ attack.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                            <td>{{ attack.ip_address }}</td>
-                            <td>{{ attack.attack_vector }}</td>
-                            <td>{{ attack.path }}</td>
-                            <td>{{ attack.method }}</td>
-                            <td>{{ attack.ai_prediction }}</td>
-                            <td>{{ attack.rl_action_taken }}</td>
-                            <td>
-                                {% if attack.geolocation_data %}
-                                    {{ attack.geolocation_data.city }}, {{ attack.geolocation_data.country }}
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if attack.ip_reputation_data %}
-                                    {{ 'Malicious' if attack.ip_reputation_data.is_malicious else 'Clean' }} ({{ attack.ip_reputation_data.reason }})
-                                {% else %}
-                                    N/A
-                                {% endif %}
-                            </td>
-                            <td style="max-width: 200px; overflow-x: auto; font-family: monospace; font-size: 0.8em;">{{ attack.payload }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <p>No attack logs recorded yet.</p>
-            {% endif %}
+                <div class="chart-container"> {# Re-using chart-container for consistency #}
+                    <h3>Top 5 Source IP Addresses</h3>
+                    <canvas id="topIPsChart"
+                            data-labels="{{ top_ip_labels }}"
+                            data-data="{{ top_ip_counts }}"
+                    ></canvas>
+                </div>
+<div class="ai-functions">
+                        <h3>AI Insights (Last 24 Hours)</h3>
+                        <ul class="function-list">
+                            {% if ai_insights %}
+                                {% for key, value in ai_insights.items() %}
+                                    <li>{{ key }}: <strong>{{ value }}</strong></li>
+                                {% endfor %}
+                            {% else %}
+                                <li>No AI insights available yet.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
 
-        </div>
+                    <div class="ai-functions-right">
+                        <h3>Recent AI-Driven Alerts</h3>
+                        <ul class="function-list">
+                            {% if ai_alert_notes %}
+                                {% for note in ai_alert_notes %}
+                                    <li style="font-size: 0.85em;">{{ note }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li style="color: #cccccc;">No recent AI-driven alerts.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                </section>
+
+            <section class="management-section">
+                <h3>Manual IP Blocking</h3>
+                <form action="{{ url_for('admin_dashboard') }}" method="POST">
+                    <input type="hidden" name="action" value="manual_block_ip">
+                    <div class="form-group mb-3">
+                        <label for="ip_to_block">IP Address to Block:</label>
+                        <input type="text" class="form-control" id="ip_to_block" name="ip_to_block" placeholder="e.g., 192.168.1.100" required>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="block_duration">Duration (minutes):</label>
+                        <input type="number" class="form-control" id="block_duration" name="block_duration" value="60" min="0" required>
+                        <small class="form-text text-muted">Enter 0 for a permanent block (until manually unblocked).</small>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="block_reason">Reason (optional):</label>
+                        <input type="text" class="form-control" id="block_reason" name="block_reason" placeholder="e.g., Admin manual block" maxlength="255">
+                    </div>
+                    <button type="submit" class="btn btn-danger">Block IP</button>
+                </form>
+            </section>
+
+            <section class="management-section">
+                <h3>Active Blocked IPs</h3>
+                {% if active_blocked_ips %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>IP Address</th>
+                                <th>Blocked Until (UTC)</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ip_entry in active_blocked_ips %}
+                            <tr>
+                                <td>{{ ip_entry.ip_address }}</td>
+                                <td>{{ ip_entry.blocked_until.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                                <td>
+                                    <form action="{{ url_for('admin_unblock_ip') }}" method="POST" style="display:inline;">
+                                        <input type="hidden" name="ip_address" value="{{ ip_entry.ip_address }}">
+                                        <button type="submit" class="btn btn-sm btn-success"
+                                                onclick="return confirm('Are you sure you want to unblock {{ ip_entry.ip_address }}?');">
+                                            Unblock
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p style="color: #cccccc;">No IP addresses are currently actively blocked.</p>
+                {% endif %}
+            </section>
+
+
+            <section class="management-section">
+                <h3>Registered Users:</h3>
+                {% if users %}
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Admin</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>{{ user.id }}</td>
+                                <td>{{ user.username }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" disabled>Edit</button>
+                                    <button class="btn btn-sm btn-danger" disabled>Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <p style="color: #cccccc;">No users registered yet.</p>
+                {% endif %}
+            </section>
+
+        </main>
     </div>
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 AI Honeypot. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

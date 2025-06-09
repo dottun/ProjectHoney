@@ -1,0 +1,352 @@
+/* static/style.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a1a;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background: #2a2a2a;
+    padding: 20px;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    overflow-y: auto; /* Added for scrollable sidebar if content overflows */
+}
+
+.admin-section {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #444;
+}
+
+.admin-section h3 {
+    color: #888;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0; /* Ensure no default padding from ul */
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 10px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.nav-item:hover {
+    background: #3a3a3a;
+}
+
+.nav-item.active {
+    background: #4a4a4a;
+}
+
+.nav-item a { /* Style for links inside nav items */
+    text-decoration: none;
+    color: inherit; /* Inherit color from parent (.nav-item) */
+    display: flex; /* Make the link fill the item */
+    align-items: center;
+    width: 100%;
+}
+
+.nav-icon {
+    margin-right: 12px;
+    font-size: 16px;
+}
+
+.nav-text {
+    font-size: 16px;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    background: #1a1a1a;
+    min-height: 100vh; /* Ensure it takes full height */
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: #2a2a2a;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #888;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.stat-number {
+    font-size: 36px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Dashboard Grid (for charts and other sections) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two columns */
+    gap: 20px;
+    margin-bottom: 30px; /* Space below grid */
+}
+
+.chart-container, .geo-container, .ai-functions, .ai-functions-right {
+    background: #2a2a2a;
+    padding: 25px;
+    border-radius: 12px;
+}
+
+.chart-container h3, .geo-container h3, .ai-functions h3, .ai-functions-right h3 {
+    margin-bottom: 20px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.chart-container {
+    /* Default span 1 for charts, adjust for specific layouts if needed */
+    height: 400px; /* Give charts a fixed height */
+    display: flex;
+    flex-direction: column;
+}
+.chart-container canvas {
+    flex-grow: 1; /* Make canvas take available height */
+}
+
+
+.geo-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.geo-item {
+    display: grid;
+    grid-template-columns: 120px 1fr 60px;
+    align-items: center;
+    gap: 15px;
+}
+
+.country {
+    font-size: 14px;
+    color: #ffffff;
+}
+
+.progress-bar {
+    height: 8px;
+    background: #444;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #4a9eff;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.percentage {
+    font-size: 14px;
+    color: #888;
+    text-align: right;
+}
+
+.function-list {
+    list-style: none;
+    padding: 0; /* Remove default list padding */
+}
+
+.function-list li {
+    padding: 10px 0;
+    color: #cccccc;
+    font-size: 14px;
+    border-bottom: 1px solid #444;
+}
+
+.function-list li:last-child {
+    border-bottom: none;
+}
+
+/* Styles for the tables, manual blocking, and other sections */
+.management-section {
+    background: #2a2a2a;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.management-section h3 {
+    color: #ffffff;
+    margin-bottom: 20px;
+}
+
+.management-section .form-group label {
+    color: #cccccc;
+}
+
+.management-section .form-control {
+    background-color: #3f4448;
+    color: #f8f9fa;
+    border: 1px solid #555;
+}
+.management-section .form-control::placeholder {
+    color: #b0b0b0;
+}
+
+.management-section .btn {
+    margin-top: 10px;
+}
+
+.management-section .table {
+    color: #f8f9fa; /* Ensure table text is visible */
+}
+.management-section .table th,
+.management-section .table td {
+    border-color: #444; /* Darker borders for table cells */
+}
+.management-section .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #3a3a3a; /* Stripe color */
+}
+.management-section .table-striped tbody tr:nth-of-type(even) {
+    background-color: #2a2a2a; /* Even row color */
+}
+.management-section .table-hover tbody tr:hover {
+    background-color: #4a4a4a; /* Hover effect */
+}
+
+/* Specific style for small badge in tables */
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+.badge-success {
+    background-color: #28a745;
+    color: white;
+    padding: .25em .4em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25rem;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        width: 200px; /* Slightly smaller sidebar for mobile */
+        padding: 15px;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .header {
+        flex-wrap: wrap; /* Allow header items to wrap */
+    }
+    .header h1 {
+        font-size: 24px; /* Smaller heading for mobile */
+        margin-bottom: 15px;
+        width: 100%;
+        text-align: center;
+    }
+
+    .menu-toggle {
+        display: block;
+        margin-left: auto; /* Push toggle to right */
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr; /* Single column layout for smaller screens */
+    }
+
+    .chart-container {
+        grid-row: span 1;
+        height: 300px; /* Adjust height for smaller charts */
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr; /* Single column for stats */
+    }
+}

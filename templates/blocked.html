@@ -3,53 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Denied - AI Honeypot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Access Blocked</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <style>
         body {
-            background-color: #f8d7da; /* Light red background */
-            color: #721c24; /* Dark red text */
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            text-align: center;
+            background-color: #f8f9fa; /* Light gray background */
         }
-        .blocked-message {
-            background-color: #f5c6cb;
+        .container {
+            background-color: #ffffff;
             padding: 40px;
             border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-            border: 1px solid #dc3545;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
         }
-        .blocked-message h1 {
-            font-size: 2.5rem;
+        h1 {
+            color: #dc3545; /* Red for danger */
             margin-bottom: 20px;
-            color: #dc3545;
         }
-        .blocked-message p {
-            font-size: 1.1rem;
+        p {
+            color: #6c757d; /* Muted text color */
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .contact-info {
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #495057;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="blocked-message">
-            <h1>Access Denied</h1>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <p class="alert alert-{{ category }}">{{ message }}</p>
-                    {% endfor %}
-                {% else %}
-                    <p>Your IP address has been temporarily blocked due to suspicious activity.</p>
-                {% endif %}
-            {% endwith %}
-            <p>Please wait for some time before trying to access the site again.</p>
-        </div>
+        <h1>Access Blocked</h1>
+        <p>Your access to this application has been temporarily blocked due to detected suspicious activity from your IP address.</p>
+        <p>This action is taken to protect our systems from potential threats.</p>
+        <p class="contact-info">If you believe this is an error, please try again later or contact support.</p>
+        <a href="{{ url_for('login') }}" class="btn btn-primary mt-3">Go to Login</a> {# Optional: provide a way back #}
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
