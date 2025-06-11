@@ -1,103 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - AI Honeypot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        .navbar {
-            margin-bottom: 20px;
-        }
-        .dashboard-container {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            background-color: #ffffff;
-        }
-        .footer {
-            background-color: #343a40;
-            color: white;
-            padding: 20px 0;
-            text-align: center;
-            margin-top: auto;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{{ url_for('home') }}">AI Honeypot</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
-                </li>
-                {% if is_admin %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin</a>
-                </li>
-                {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <div class="container flex-grow-1">
-        <div class="dashboard-container">
-            <h2 class="mb-4">Welcome, {{ username }}!</h2>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
+{% block content %}
+<div class="dashboard-container">
+    <h2 class="mb-4">Welcome, {{ username }}!</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
 
-            <p>This is your personal dashboard. Here you can monitor your activity and security status.</p>
+    <p>This is your personal dashboard. Here you can monitor your activity and security status.</p>
 
-            <h4 class="mt-4">Your Connection Details:</h4>
-            <ul class="list-group">
-                <li class="list-group-item"><strong>IP Address:</strong> {{ ip_address }}</li>
-                <li class="list-group-item"><strong>Location:</strong> {{ geolocation.city }}, {{ geolocation.country }}</li>
-                <li class="list-group-item">
-                    <strong>IP Reputation:</strong>
-                    {% if ip_reputation.is_malicious %}
-                        <span class="badge badge-danger">Malicious / Suspicious</span> (Reason: {{ ip_reputation.reason }})
-                    {% else %}
-                        <span class="badge badge-success">Clean</span>
-                    {% endif %}
-                </li>
-            </ul>
-
-            {% if is_admin %}
-            <h4 class="mt-4">Admin Actions</h4>
-            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-warning">Go to Admin Dashboard</a>
+    <h4 class="mt-4">Your Connection Details:</h4>
+    <ul class="list-group">
+        <li class="list-group-item"><strong>IP Address:</strong> {{ ip_address }}</li>
+        <li class="list-group-item"><strong>Location:</strong> {{ geolocation.city }}, {{ geolocation.country }}</li>
+        <li class="list-group-item">
+            <strong>IP Reputation:</strong>
+            {% if ip_reputation.is_malicious %}
+                <span class="badge badge-danger">Malicious / Suspicious</span> (Reason: {{ ip_reputation.reason }})
+            {% else %}
+                <span class="badge badge-success">Clean</span>
             {% endif %}
+        </li>
+    </ul>
 
-        </div>
-    </div>
+    {% if is_admin %}
+    <h4 class="mt-4">Admin Actions</h4>
+    <a href="{{ url_for('admin_dashboard') }}" class="btn btn-warning">Go to Admin Dashboard</a>
+    {% endif %}
 
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2024 AI Honeypot. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+</div>
+{% endblock %}

@@ -1,234 +1,573 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Honeypot Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    </head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Enhanced AI Honeypot Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --bg-light: #1f1f1f;
+            --primary: #4a9eff;
+            --accent: #00c4a7;
+            --text-light: #f0f0f0;
+            --text-muted: #999;
+            --border-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        nav.sidebar {
+            width: 260px;
+            background: var(--bg-light);
+            padding: 30px 20px;
+            flex-shrink: 0;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            overflow-y: auto; /* Enable scrolling for long sidebars */
+        }
+
+        .sidebar h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-light);
+            width: 100%;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+        }
+
+        .nav-icon {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 30px;
+            background: var(--bg-dark);
+            overflow-y: auto;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--bg-light);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* NEW LAYOUT FOR MAIN DASHBOARD CONTENT */
+        .main-dashboard-content-wrapper {
+            display: grid;
+            grid-template-columns: 2fr 1fr; /* Example: left column is twice as wide as right */
+            grid-gap: 20px;
+            margin-bottom: 30px; /* Space before IP Management */
+        }
+
+        .main-charts-column,
+        .main-lists-column {
+            display: grid;
+            grid-auto-rows: minmax(min-content, max-content); /* Panels fill available height */
+            grid-gap: 20px;
+        }
+
+        .panel {
+            background: var(--bg-light);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel h3 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        canvas {
+            max-height: 300px; /* Increased height for chart */
+            width: 100% !important;
+            height: auto !important;
+        }
+
+        .function-list, .recent-logs {
+            list-style: none;
+            padding: 0;
+        }
+
+        .function-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .function-list li:last-child, .recent-logs .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .function-list li span.status {
+            font-size: 12px;
+            padding: 4px 10px;
+            background: var(--accent);
+            border-radius: 20px;
+            color: #121212;
+            font-weight: bold;
+        }
+
+        .recent-logs {
+            max-height: 250px; /* Slightly increased height for logs */
+            overflow-y: auto;
+            font-size: 14px;
+        }
+
+        .log-item {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-light);
+        }
+
+        .geo-list {
+            margin-top: 15px;
+        }
+
+        .geo-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+        }
+
+        .geo-item .country {
+            flex-shrink: 0;
+            width: 100px;
+            font-weight: bold;
+            color: var(--text-light);
+        }
+
+        .geo-item .progress-bar {
+            flex-grow: 1;
+            background-color: #333;
+            border-radius: 5px;
+            height: 20px;
+            overflow: hidden;
+        }
+
+        .geo-item .progress-fill {
+            height: 100%;
+            background-color: var(--accent);
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+
+        .geo-item .percentage {
+            flex-shrink: 0;
+            width: 50px;
+            text-align: right;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        /* IP Management and Forms */
+        .ip-management-section h4 {
+            color: var(--text-light);
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .ip-management-section form {
+            display: flex;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ip-management-section input[type="text"] {
+            flex: 1 1 150px; /* Allows inputs to grow/shrink, min width 150px */
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+            background-color: #333;
+            color: var(--text-light);
+        }
+
+        .ip-management-section button {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .ip-management-section button:hover {
+            background-color: #3a8ee0;
+        }
+
+        .unblock-btn {
+            background-color: #dc3545;
+            margin-left: 10px;
+        }
+
+        .unblock-btn:hover {
+            background-color: #c82333;
+        }
+
+        .ip-management-section ul.function-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+        .ip-management-section ul.function-list li:last-child {
+            border-bottom: none;
+        }
+
+
+        @media (max-width: 992px) { /* Adjust breakpoint for two-column layout collapse */
+            .main-dashboard-content-wrapper {
+                grid-template-columns: 1fr; /* Stack columns on smaller screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav.sidebar {
+                position: fixed;
+                top: 0;
+                left: -260px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+            }
+
+            nav.sidebar.active {
+                left: 0;
+            }
+
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            header h1 {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            .menu-toggle {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-light);
+                font-size: 1.8em;
+                cursor: pointer;
+                align-self: flex-end;
+            }
+
+            .overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+            }
+            .sidebar.active + .overlay {
+                display: block;
+            }
+        }
+        .menu-toggle {
+            display: none;
+        }
+    </style>
+</head>
 <body>
-    <div class="container">
-        <nav class="sidebar">
-            <div class="admin-section">
-                <h3>ADMIN</h3>
+    <nav class="sidebar">
+        <h3>ADMIN PANEL</h3>
+        <ul class="nav-menu">
+            <li class="nav-item active">
+                <a href="{{ url_for('admin_dashboard') }}">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('attack_logs') }}">
+                    <span class="nav-icon">🔗</span> Interactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin_dashboard') }}#alerts">
+                    <span class="nav-icon">🔔</span> Alerts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{{ url_for('admin_dashboard') }}#settings">
+                    <span class="nav-icon">⚙️</span> Settings
+                </a>
+            </li>
+        </ul>
+    </nav>
+    <div class="overlay"></div>
+
+    <main>
+        <header>
+            <h1>AI Honeypot Dashboard</h1>
+            <button class="menu-toggle">☰</button>
+        </header>
+
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>INTERACTIONS</h3>
+                <div class="stat-number" id="interactions">{{ "{:,}".format(total_interactions) }}</div>
             </div>
-            <ul class="nav-menu">
-                <li class="nav-item active">
-                    <a href="{{ url_for('admin_dashboard') }}">
-                        <span class="nav-icon">📊</span>
-                        <span class="nav-text">Dashboard</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('attack_logs') }}"> {# This should link to your dedicated logs page #}
-                        <span class="nav-icon">🔗</span>
-                        <span class="nav-text">Interactions</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('admin_dashboard') }}"> {# Or a dedicated alerts page if you make one later #}
-                        <span class="nav-icon">🔔</span>
-                        <span class="nav-text">Alerts</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('logout') }}"> {# Example for a logout link #}
-                        <span class="nav-icon">⚙️</span>
-                        <span class="nav-text">Logout</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+            <div class="stat-card">
+                <h3>UNIQUE IPs</h3>
+                <div class="stat-number" id="ips">{{ unique_ips }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>ALERTS</h3>
+                <div class="stat-number" id="alerts">{{ total_alerts }}</div>
+            </div>
+        </section>
 
-        <main class="main-content">
-            <header class="header">
-                <h1>AI HONEYPOT DASHBOARD</h1>
-                <button class="menu-toggle">☰</button>
-            </header>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <h3>INTERACTIONS</h3>
-                    <div class="stat-number">{{ total_interactions | default(0) }}</div> {# Dynamic Data #}
-                </div>
-                <div class="stat-card">
-                    <h3>UNIQUE IPs</h3>
-                    <div class="stat-number">{{ unique_ips | default(0) }}</div> {# Dynamic Data #}
-                </div>
-                <div class="stat-card">
-                    <h3>ALERTS</h3>
-                    <div class="stat-number">{{ total_alerts | default(0) }}</div> {# Dynamic Data #}
-                </div>
-            </section>
-
-            <section class="dashboard-grid">
-                <div class="chart-container">
+        <div class="main-dashboard-content-wrapper">
+            <div class="main-charts-column">
+                <div class="panel">
                     <h3>Interaction Activity (Last 24 Hours)</h3>
-                    <canvas id="attacksOverTimeChart"
-                            data-labels="{{ attack_chart_labels }}"
-                            data-data="{{ attack_chart_data }}"
-                    ></canvas>
+                    <canvas id="activityChart"></canvas>
                 </div>
 
-                <div class="geo-container">
-                        <h3>Geographic Distribution</h3>
-                        <div class="geo-list">
-                            {% if geographic_distribution_data %}
-                                {% for geo_item in geographic_distribution_data %}
+                <div class="panel">
+                    <h3>Geographic Distribution (Last 24 Hours)</h3>
+                    <div class="geo-list">
+                        {% if geographic_distribution_data %}
+                            {% for item in geographic_distribution_data %}
                                 <div class="geo-item">
-                                    <span class="country">{{ geo_item.country }}</span>
+                                    <span class="country">{{ item.country }}</span>
                                     <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {{ geo_item.width }}"></div>
+                                        <div class="progress-fill" style="width: {{ item.width }}"></div>
                                     </div>
-                                    <span class="percentage">{{ geo_item.percentage }}</span>
+                                    <span class="percentage">{{ item.percentage }}</span>
                                 </div>
-                                {% endfor %}
-                            {% else %}
-                                <p style="color: #cccccc;">No geographic data available yet.</p>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                <div class="chart-container"> {# Re-using chart-container for consistency #}
-                    <h3>Top 5 Source IP Addresses</h3>
-                    <canvas id="topIPsChart"
-                            data-labels="{{ top_ip_labels }}"
-                            data-data="{{ top_ip_counts }}"
-                    ></canvas>
-                </div>
-<div class="ai-functions">
-                        <h3>AI Insights (Last 24 Hours)</h3>
-                        <ul class="function-list">
-                            {% if ai_insights %}
-                                {% for key, value in ai_insights.items() %}
-                                    <li>{{ key }}: <strong>{{ value }}</strong></li>
-                                {% endfor %}
-                            {% else %}
-                                <li>No AI insights available yet.</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                    <div class="ai-functions-right">
-                        <h3>Recent AI-Driven Alerts</h3>
-                        <ul class="function-list">
-                            {% if ai_alert_notes %}
-                                {% for note in ai_alert_notes %}
-                                    <li style="font-size: 0.85em;">{{ note }}</li>
-                                {% endfor %}
-                            {% else %}
-                                <li style="color: #cccccc;">No recent AI-driven alerts.</li>
-                            {% endif %}
-                        </ul>
-                    </div>
-
-                </section>
-
-            <section class="management-section">
-                <h3>Manual IP Blocking</h3>
-                <form action="{{ url_for('admin_dashboard') }}" method="POST">
-                    <input type="hidden" name="action" value="manual_block_ip">
-                    <div class="form-group mb-3">
-                        <label for="ip_to_block">IP Address to Block:</label>
-                        <input type="text" class="form-control" id="ip_to_block" name="ip_to_block" placeholder="e.g., 192.168.1.100" required>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="block_duration">Duration (minutes):</label>
-                        <input type="number" class="form-control" id="block_duration" name="block_duration" value="60" min="0" required>
-                        <small class="form-text text-muted">Enter 0 for a permanent block (until manually unblocked).</small>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="block_reason">Reason (optional):</label>
-                        <input type="text" class="form-control" id="block_reason" name="block_reason" placeholder="e.g., Admin manual block" maxlength="255">
-                    </div>
-                    <button type="submit" class="btn btn-danger">Block IP</button>
-                </form>
-            </section>
-
-            <section class="management-section">
-                <h3>Active Blocked IPs</h3>
-                {% if active_blocked_ips %}
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-sm">
-                        <thead>
-                            <tr>
-                                <th>IP Address</th>
-                                <th>Blocked Until (UTC)</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ip_entry in active_blocked_ips %}
-                            <tr>
-                                <td>{{ ip_entry.ip_address }}</td>
-                                <td>{{ ip_entry.blocked_until.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-                                <td>
-                                    <form action="{{ url_for('admin_unblock_ip') }}" method="POST" style="display:inline;">
-                                        <input type="hidden" name="ip_address" value="{{ ip_entry.ip_address }}">
-                                        <button type="submit" class="btn btn-sm btn-success"
-                                                onclick="return confirm('Are you sure you want to unblock {{ ip_entry.ip_address }}?');">
-                                            Unblock
-                                        </button>
-                                    </form>
-                                </td>
-                            </tr>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% else %}
+                            <p style="color: var(--text-muted);">No geographic data available for the last 24 hours.</p>
+                        {% endif %}
+                    </div>
                 </div>
-                {% else %}
-                <p style="color: #cccccc;">No IP addresses are currently actively blocked.</p>
-                {% endif %}
-            </section>
+            </div>
 
-
-            <section class="management-section">
-                <h3>Registered Users:</h3>
-                {% if users %}
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered table-sm">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Username</th>
-                                <th>Email</th>
-                                <th>Admin</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for user in users %}
-                            <tr>
-                                <td>{{ user.id }}</td>
-                                <td>{{ user.username }}</td>
-                                <td>{{ user.email }}</td>
-                                <td>{{ 'Yes' if user.is_admin else 'No' }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-info" disabled>Edit</button>
-                                    <button class="btn btn-sm btn-danger" disabled>Delete</button>
-                                </td>
-                            </tr>
+            <div class="main-lists-column">
+                <div class="panel">
+                    <h3>Recent AI Detections</h3>
+                    <ul class="recent-logs function-list">
+                        {% if ai_alert_notes %}
+                            {% for alert in ai_alert_notes %}
+                                <li class="log-item">{{ alert }}</li>
                             {% endfor %}
-                        </tbody>
-                    </table>
+                        {% else %}
+                            <li style="color: var(--text-muted);">No recent AI alerts.</li>
+                        {% endif %}
+                    </ul>
                 </div>
-                {% else %}
-                <p style="color: #cccccc;">No users registered yet.</p>
-                {% endif %}
-            </section>
 
-        </main>
-    </div>
+                <div class="panel">
+                    <h3>AI Functionalities</h3>
+                    <ul class="function-list">
+                        {% for key, value in ai_insights.items() %}
+                            <li>
+                                {{ key }}
+                                <span class="status">{{ value }}</span>
+                            </li>
+                        {% else %}
+                            <li style="color: var(--text-muted);">No AI insights available.</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <div class="panel ip-management-section" id="settings">
+            <h3>IP Management</h3>
+            <h4>Currently Blocked IPs</h4>
+            {% if active_blocked_ips %}
+                <ul class="function-list">
+                    {% for ip in active_blocked_ips %}
+                        <li>
+                            {{ ip.ip_address }} (until {{ ip.blocked_until.strftime('%Y-%m-%d %H:%M UTC') }})
+                            <form action="{{ url_for('admin_unblock_ip') }}" method="POST" style="display:inline;">
+                                <input type="hidden" name="ip_address" value="{{ ip.ip_address }}">
+                                <button type="submit" class="unblock-btn">Unblock</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p style="color: var(--text-muted);">No IPs currently blocked.</p>
+            {% endif %}
+
+            <h4>Manually Block IP</h4>
+            <form action="{{ url_for('admin_dashboard') }}" method="POST" class="block-ip-form">
+                <input type="text" name="ip_address" placeholder="Enter IP address to block" required>
+                <input type="text" name="reason" placeholder="Reason (Optional)">
+                <button type="submit">Block IP (24h)</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const ctx = document.getElementById('activityChart').getContext('2d');
+
+        // Dynamic data from Flask for the chart
+        const chartLabels = {{ attack_chart_labels | safe }};
+        const chartData = {{ attack_chart_data | safe }};
+
+        const activityChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Interactions per Hour',
+                    data: chartData,
+                    backgroundColor: 'rgba(74, 158, 255, 0.2)',
+                    borderColor: '#4a9eff',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: '#999' }, grid: { color: '#333' } },
+                    y: { ticks: { color: '#999' }, grid: { color: '#333', drawBorder: false }, beginAtZero: true } /* Added beginAtZero */
+                }
+            }
+        });
+
+        // Navigation functionality
+        const navItems = document.querySelectorAll('.nav-item');
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+        const overlay = document.querySelector('.overlay');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                item.classList.add('active');
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Mobile menu toggle
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+
+        // Animate progress bars on load for geographic distribution
+        window.addEventListener('load', () => {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 500);
+            });
+        });
+    </script>
 </body>
 </html>

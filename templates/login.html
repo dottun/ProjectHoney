@@ -1,54 +1,46 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - AI Honeypot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body { background-color: #f8f9fa; }
-        .form-container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            background-color: #ffffff;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="form-container">
-            <h2 class="text-center mb-4">Log In</h2>
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">{{ message }}</div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-            <form action="{{ url_for('login') }}" method="POST">
-                <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" class="form-control" id="username" name="username" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
-                    <label class="form-check-label" for="remember_me">Remember Me</label>
-                </div>
-                <button type="submit" class="btn btn-primary btn-block">Log In</button>
-            </form>
-            <p class="text-center mt-3">Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
-            <p class="text-center mt-2"><a href="{{ url_for('forgot_password') }}">Forgot Password?</a></p>
+{% extends "base.html" %}
+
+{# Add a class to the body for specific background on form pages #}
+{% block head_extra %}
+<style>
+    /* These specific styles are now handled by .form-page-body and .form-container in style.css */
+    /* You can remove this style block if you prefer all specific styles in style.css */
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2 class="text-center mb-4">Log In</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form action="{{ url_for('login') }}" method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" name="username" required>
         </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-</body>
-</html>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <div class="form-group form-check">
+            <input type="checkbox" class="form-check-input" id="remember_me" name="remember_me">
+            <label class="form-check-label" for="remember_me">Remember Me</label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Log In</button>
+    </form>
+    <p class="text-center mt-3">Don't have an account? <a href="{{ url_for('register') }}">Sign Up</a></p>
+    <p class="text-center mt-2"><a href="{{ url_for('forgot_password') }}">Forgot Password?</a></p>
+</div>
+{% endblock %}
+
+{# Add this script block to set the body class for styling #}
+{% block scripts %}
+<script>
+    document.body.classList.add('form-page-body');
+</script>
+{% endblock %}

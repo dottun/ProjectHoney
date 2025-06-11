@@ -3,57 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Internal Server Error - AI Honeypot</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #343a40; /* Dark background */
-            color: #f8f9fa; /* Light text */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .error-container {
-            background-color: #212529; /* Even darker card */
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            max-width: 600px;
-        }
-        h1 {
-            font-size: 5rem;
-            color: #ffc107; /* Orange/Yellow for warning/error */
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-        }
-        .btn-home {
-            background-color: #007bff; /* Blue button */
-            border-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .btn-home:hover {
-            background-color: #0056b3;
-            color: #fff;
-            text-decoration: none;
-        }
-    </style>
+    <title>Internal Server Error</title>
 </head>
 <body>
-    <div class="error-container">
-        <h1>500</h1>
-        <p>An Unexpected Error Occurred.</p>
-        <p>We are sorry, but something went wrong on our end. Please try again later.</p>
-        <a href="{{ url_for('home') }}" class="btn-home">Go to Homepage</a>
-    </div>
+    <h1>Internal Server Error</h1>
+    <p>Something went wrong on our end. We apologize for the inconvenience.</p>
+    <p>Please try again later.</p>
 </body>
 </html>
