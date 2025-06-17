@@ -1,4 +1,5 @@
 # app.py
+import requests
 import json
 import logging
 import os
@@ -6,7 +7,7 @@ import threading # For non-blocking emails
 from datetime import datetime, timedelta
 # from jinja2 import Environment, FileSystemLoader # This import is not strictly needed for Flask apps
 
-from flask import Flask, render_template, request, redirect, url_for, flash, make_response, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, make_response, jsonify, current_app
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_mail import Message # Import Message from Flask-Mail
 from flask_limiter.errors import RateLimitExceeded # Import RateLimitExceeded error
@@ -14,6 +15,8 @@ from flask_limiter.errors import RateLimitExceeded # Import RateLimitExceeded er
 # Import extensions and configurations
 from extensions import db, bcrypt, login_manager, limiter, migrate, mail
 from config import Config # Import Config from config.py
+from honeypot import get_geolocation_data
+
 
 # Import honeypot-related functions and classes from honeypot.py
 # Make sure honeypot.py is in the same directory as app.py
@@ -26,6 +29,8 @@ from honeypot import (
 # Import database models
 # Make sure models.py is in the same directory as app.py
 from models import User, Attack, BlockedIP
+
+#======================================
 
 # --- Application Factory Function ---
 def create_app(config_class=Config):
@@ -174,7 +179,7 @@ def create_app(config_class=Config):
         if current_user.is_authenticated:
             return redirect(url_for('dashboard'))
         # my_app_name and current_year are automatically available in home.html
-        return render_template('home.html', title='Home')
+        return render_template('index.html', title='Home')
 
     @app.route("/login", methods=['GET', 'POST'])
     @limiter.limit("5 per minute") # Rate limit login attempts
@@ -281,6 +286,45 @@ def create_app(config_class=Config):
         all_attacks = Attack.query.order_by(Attack.timestamp.desc()).all()
         return render_template('attack_logs.html', title='Attack Logs', all_attacks=all_attacks)
 
+
+    @app.route("/api/attacks")
+    @login_required # Only logged-in users can access this data
+    def api_attacks():
+        # Fetch all attacks, or limit for performance if you have many
+        # For now, let's get a reasonable number, e.g., last 1000 or from last month
+
+        # Example: Fetch attacks from the last 30 days
+        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+        attacks = Attack.query.filter(Attack.timestamp >= thirty_days_ago).order_by(Attack.timestamp.desc()).all()
+
+        # Or fetch all attacks (be careful with very large datasets)
+        # attacks = Attack.query.order_by(Attack.timestamp.desc()).all()
+
+        attack_data = []
+        for attack in attacks:
+            attack_data.append({
+                "id": attack.id,
+                "ip_address": attack.ip_address,
+                "timestamp": attack.timestamp.isoformat(), # Convert datetime to string
+                "path": attack.path,
+                "method": attack.method,
+                "attack_type": attack.attack_type,
+                "ai_prediction": attack.ai_prediction,
+                "rl_action_taken": attack.rl_action_taken,
+                "latitude": attack.latitude,
+                "longitude": attack.longitude,
+                "country": attack.country,
+                "city": attack.city,
+                # You might want to include more data here as needed for other charts/tables
+            })
+        return jsonify(attack_data)
+
+    
+
+    @app.route("/live_attacks")
+    @login_required # Ensure only logged-in users can access
+    def live_attacks_dashboard():
+        return render_template('live_attacks.html', title='Live Attacks Dashboard')
 
     @app.route('/admin_dashboard', methods=['GET', 'POST'])
     @login_required

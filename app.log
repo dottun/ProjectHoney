@@ -944,3 +944,686 @@ jinja2.exceptions.UndefinedError: 'geolocation' is undefined
 [2025-06-11 01:17:39,263] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
 [2025-06-11 01:17:39,263] INFO in honeypot: RL Agent model loaded successfully.
 [2025-06-11 01:17:39,263] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-11 01:26:52,430] INFO in app: Application starting up...
+[2025-06-11 01:26:52,440] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-11 01:26:52,440] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-11 01:27:06,617] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:06] "GET / HTTP/1.1" 200 -
+[2025-06-11 01:27:08,168] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:08] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-11 01:27:11,615] ERROR in app: Exception on /home [GET]
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/ProjectHoney/app.py", line 177, in home
+    return render_template('home.html', title='Home')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: home.html
+[2025-06-11 01:27:11,617] ERROR in app: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/ProjectHoney/app.py", line 177, in home
+    return render_template('home.html', title='Home')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: home.html
+[2025-06-11 01:27:11,618] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:11] "[35m[1mGET /home HTTP/1.1[0m" 500 -
+[2025-06-11 01:27:36,151] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:36] "GET /login HTTP/1.1" 200 -
+[2025-06-11 01:27:36,438] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:36] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-11 01:27:39,503] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-11 01:27:39,504] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:39] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-11 01:27:39,753] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:39] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-11 01:27:40,122] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:40] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-11 01:27:48,534] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:48] "[32mGET /logout HTTP/1.1[0m" 302 -
+[2025-06-11 01:27:48,722] ERROR in app: Exception on /home [GET]
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/ProjectHoney/app.py", line 177, in home
+    return render_template('home.html', title='Home')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: home.html
+[2025-06-11 01:27:48,723] ERROR in app: 500 Internal Server Error: 500 Internal Server Error: The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.
+Traceback (most recent call last):
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspaces/ProjectHoney/app.py", line 177, in home
+    return render_template('home.html', title='Home')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 149, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/codespace/.local/lib/python3.12/site-packages/jinja2/loaders.py", line 126, in load
+    source, filename, uptodate = self.get_source(environment, name)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 65, in get_source
+    return self._get_source_fast(environment, template)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/python/3.12.1/lib/python3.12/site-packages/flask/templating.py", line 99, in _get_source_fast
+    raise TemplateNotFound(template)
+jinja2.exceptions.TemplateNotFound: home.html
+[2025-06-11 01:27:48,725] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:27:48] "[35m[1mGET /home HTTP/1.1[0m" 500 -
+[2025-06-11 01:28:00,737] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:00] "[32mGET /admin_dashboard HTTP/1.1[0m" 302 -
+[2025-06-11 01:28:00,992] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:00] "GET /login?next=/admin_dashboard HTTP/1.1" 200 -
+[2025-06-11 01:28:01,310] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:01] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-11 01:28:05,324] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-11 01:28:05,325] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:05] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-11 01:28:05,754] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:05] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-11 01:28:06,129] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:06] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-11 01:28:09,730] INFO in _internal: 127.0.0.1 - - [11/Jun/2025 01:28:09] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 20:47:07,982] INFO in app: Application starting up...
+[2025-06-17 20:47:07,999] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 20:47:07,999] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 20:47:08,000] INFO in _internal:  * Restarting with stat
+[2025-06-17 20:47:09,297] INFO in app: Application starting up...
+[2025-06-17 20:47:09,309] WARNING in _internal:  * Debugger is active!
+[2025-06-17 20:47:09,318] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 20:48:01,990] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:48:01] "GET / HTTP/1.1" 200 -
+[2025-06-17 20:48:03,131] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:48:03] "GET /static/style.css HTTP/1.1" 200 -
+[2025-06-17 20:48:34,114] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:48:34] "GET /register HTTP/1.1" 200 -
+[2025-06-17 20:48:41,022] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:48:41,022] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:48:41,022] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:48:41,098] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:48:41] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:49:12,535] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:12] "GET /login HTTP/1.1" 200 -
+[2025-06-17 20:49:13,853] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:13] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 20:49:21,460] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:49:21,460] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:49:21,460] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:49:21,467] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:21] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:49:22,497] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 20:49:22,498] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:22] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 20:49:29,297] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:29] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 20:49:34,943] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:34] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 20:49:39,742] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:49:39,743] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:49:39,743] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:49:39,749] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:49:39] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:02,760] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:02] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 20:50:07,706] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:50:07,706] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:50:07,706] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:50:07,712] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:07] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:32,850] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:32] "GET /attack_logs HTTP/1.1" 200 -
+[2025-06-17 20:50:36,893] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:50:36,893] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:50:36,893] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:50:36,899] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:36] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:38,478] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:38] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 20:50:41,033] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:50:41,033] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:50:41,033] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:50:41,039] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:41] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:49,104] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:50:49,104] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:50:49,105] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:50:49,116] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:49] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:55,329] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:55] "GET /attack_logs HTTP/1.1" 200 -
+[2025-06-17 20:50:56,047] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:50:56,048] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:50:56,048] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:50:56,054] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:56] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:57,349] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:57] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 20:50:59,321] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:50:59,321] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:50:59,321] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:50:59,340] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:59] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 20:50:59,363] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:50:59] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 20:51:05,236] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 20:51:05,236] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 20:51:05,236] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 20:51:05,252] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 20:51:05] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:17:24,186] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 21:17:24,186] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 21:17:24,204] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 21:17:24,204] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 21:17:24,204] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 21:17:24,205] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 21:17:24,205] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 21:17:24,443] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 21:17:24,443] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 21:17:24,447] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 21:17:24,447] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 21:17:24,447] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 21:17:24,447] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 21:17:24,447] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 21:19:13,029] INFO in app: Application starting up...
+[2025-06-17 21:19:13,042] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 21:19:13,042] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 21:19:13,043] INFO in _internal:  * Restarting with stat
+[2025-06-17 21:19:14,344] INFO in app: Application starting up...
+[2025-06-17 21:19:14,361] WARNING in _internal:  * Debugger is active!
+[2025-06-17 21:19:14,362] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 21:19:18,102] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:18] "GET / HTTP/1.1" 200 -
+[2025-06-17 21:19:18,464] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:19:19,541] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:19:19,541] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:19:19,541] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:19:19,553] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:19] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:19:21,728] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:21] "GET /register HTTP/1.1" 200 -
+[2025-06-17 21:19:22,314] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:19:22,314] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:19:22,314] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:19:22,321] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:22] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:19:25,153] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:25] "GET /login HTTP/1.1" 200 -
+[2025-06-17 21:19:25,428] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:25] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:19:25,649] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:19:25,649] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:19:25,649] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:19:25,655] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:25] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:19:27,890] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 21:19:27,891] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:27] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 21:19:28,213] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:28] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 21:19:28,457] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:28] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:19:28,742] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:19:28,742] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:19:28,742] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:19:28,748] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:28] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:19:37,170] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:37] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 21:19:37,756] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:19:37,757] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:19:37,757] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:19:37,767] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:37] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:19:39,369] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:39] "[32mGET /logout HTTP/1.1[0m" 302 -
+[2025-06-17 21:19:39,537] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:39] "[35m[1mGET /home HTTP/1.1[0m" 500 -
+[2025-06-17 21:19:39,777] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:39] "[36mGET /home?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+[2025-06-17 21:19:39,798] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:39] "[36mGET /home?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:19:40,167] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:40] "GET /home?__debugger__=yes&cmd=resource&f=console.png&s=em02iquiz0dYIaHsQ3uu HTTP/1.1" 200 -
+[2025-06-17 21:19:40,360] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:19:40] "[36mGET /home?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+[2025-06-17 21:22:28,047] INFO in _internal:  * Detected change in '/workspaces/ProjectHoney/app.py', reloading
+[2025-06-17 21:22:28,245] INFO in _internal:  * Restarting with stat
+[2025-06-17 21:22:29,641] INFO in app: Application starting up...
+[2025-06-17 21:22:29,653] WARNING in _internal:  * Debugger is active!
+[2025-06-17 21:22:29,653] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 21:22:31,576] INFO in _internal:  * Detected change in '/workspaces/ProjectHoney/app.py', reloading
+[2025-06-17 21:22:31,777] INFO in _internal:  * Restarting with stat
+[2025-06-17 21:22:32,989] INFO in app: Application starting up...
+[2025-06-17 21:22:33,001] WARNING in _internal:  * Debugger is active!
+[2025-06-17 21:22:33,001] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 21:22:33,357] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:33] "GET /home HTTP/1.1" 200 -
+[2025-06-17 21:22:33,718] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:22:34,003] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:22:34,003] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:22:34,003] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:22:34,018] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:34] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:22:38,488] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:38] "GET /login HTTP/1.1" 200 -
+[2025-06-17 21:22:38,800] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:38] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:22:39,135] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:22:39,135] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:22:39,136] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:22:39,142] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:39] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:22:41,132] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 21:22:41,133] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:41] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 21:22:41,435] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:41] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 21:22:41,742] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:41] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:22:42,027] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:22:42,027] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:22:42,028] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:22:42,033] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:42] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:22:47,155] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:47] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 21:22:47,718] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:22:47,718] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:22:47,718] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:22:47,727] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:47] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:22:49,127] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:49] "[32mGET /logout HTTP/1.1[0m" 302 -
+[2025-06-17 21:22:49,324] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:49] "GET /home HTTP/1.1" 200 -
+[2025-06-17 21:22:49,590] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:49] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:22:49,773] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:22:49,773] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:22:49,773] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:22:49,779] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:22:49] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:24:01,259] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:01] "GET /login HTTP/1.1" 200 -
+[2025-06-17 21:24:01,558] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:01] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:24:01,947] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:24:01,947] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:24:01,948] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:24:01,955] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:01] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:24:03,942] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 21:24:03,943] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:03] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 21:24:04,325] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:04] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 21:24:04,606] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:04] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 21:24:04,895] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:24:04,895] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:24:04,895] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:24:04,901] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:04] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:24:10,520] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:10] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 21:24:10,926] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 21:24:10,926] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 21:24:10,926] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 21:24:10,932] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 21:24:10] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 21:44:44,677] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 21:44:44,678] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 21:44:44,683] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 21:44:44,683] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 21:44:44,683] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 21:44:44,683] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 21:44:44,684] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 21:44:44,931] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 21:44:44,932] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 21:44:44,936] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 21:44:44,936] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 21:44:44,936] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 21:44:44,936] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 21:44:44,936] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 21:46:50,419] INFO in app: Application starting up...
+[2025-06-17 21:46:59,358] INFO in app: Application starting up...
+[2025-06-17 22:17:39,107] INFO in app: Application starting up...
+[2025-06-17 22:34:42,811] INFO in app: Application starting up...
+[2025-06-17 22:34:42,824] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 22:34:42,824] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 22:34:42,824] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:34:44,185] INFO in app: Application starting up...
+[2025-06-17 22:34:44,196] WARNING in _internal:  * Debugger is active!
+[2025-06-17 22:34:44,197] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 22:34:47,027] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:47] "GET / HTTP/1.1" 200 -
+[2025-06-17 22:34:47,423] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:47] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:34:47,766] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:34:47,770] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:47] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:34:49,601] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:49] "GET /register HTTP/1.1" 200 -
+[2025-06-17 22:34:50,030] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:34:50,034] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:50] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:34:52,452] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:52] "GET /login HTTP/1.1" 200 -
+[2025-06-17 22:34:52,765] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:52] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:34:53,069] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:34:53,072] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:53] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:34:55,412] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 22:34:55,413] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:55] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 22:34:55,767] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:55] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+[2025-06-17 22:34:56,046] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:56] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+[2025-06-17 22:34:56,058] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:56] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:34:56,368] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:56] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png&s=7WhJGJwEMySvSVYL84kk HTTP/1.1" 200 -
+[2025-06-17 22:34:56,567] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:34:56] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=console.png HTTP/1.1[0m" 304 -
+[2025-06-17 22:37:27,754] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 22:37:27,754] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 22:37:27,759] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 22:37:27,759] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 22:37:27,759] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 22:37:27,759] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 22:37:27,759] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 22:37:28,006] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 22:37:28,006] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 22:37:28,010] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 22:37:28,010] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 22:37:28,010] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 22:37:28,010] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 22:37:28,010] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 22:38:27,582] INFO in app: Application starting up...
+[2025-06-17 22:38:27,595] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 22:38:27,595] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 22:38:27,596] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:38:28,845] INFO in app: Application starting up...
+[2025-06-17 22:38:28,874] WARNING in _internal:  * Debugger is active!
+[2025-06-17 22:38:28,876] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 22:38:33,435] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:33] "GET / HTTP/1.1" 200 -
+[2025-06-17 22:38:33,762] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:33] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:38:34,171] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:38:34,175] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:34] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:38:35,412] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:35] "GET /register HTTP/1.1" 200 -
+[2025-06-17 22:38:35,905] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:38:35,910] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:35] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:38:37,415] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:37] "GET /login HTTP/1.1" 200 -
+[2025-06-17 22:38:37,719] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:37] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:38:38,065] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:38:38,068] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:38] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:38:40,028] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 22:38:40,030] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:40] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 22:38:40,306] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:40] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+[2025-06-17 22:38:40,700] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:40] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+[2025-06-17 22:38:40,705] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:40] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:38:40,973] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:38:40] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png&s=7IcOVFSfydR31KmxzL45 HTTP/1.1" 200 -
+[2025-06-17 22:40:49,266] INFO in _internal:  * Detected change in '/workspaces/ProjectHoney/app.py', reloading
+[2025-06-17 22:40:49,462] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:47:11,669] INFO in app: Application starting up...
+[2025-06-17 22:47:11,683] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 22:47:11,683] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 22:47:11,683] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:47:12,957] INFO in app: Application starting up...
+[2025-06-17 22:47:12,971] WARNING in _internal:  * Debugger is active!
+[2025-06-17 22:47:12,972] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 22:47:20,819] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:20] "GET / HTTP/1.1" 200 -
+[2025-06-17 22:47:21,137] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:21] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:47:21,506] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:47:21,510] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:21] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:47:23,793] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:23] "GET /register HTTP/1.1" 200 -
+[2025-06-17 22:47:24,224] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:47:24,227] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:24] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:47:25,721] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:25] "GET /login HTTP/1.1" 200 -
+[2025-06-17 22:47:26,020] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:26] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:47:26,340] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:47:26,346] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:26] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:47:28,708] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 22:47:28,709] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:28] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 22:47:29,070] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:29] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+[2025-06-17 22:47:29,337] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:29] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:47:29,410] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:29] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+[2025-06-17 22:47:29,693] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:47:29] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png&s=WZEAtPZqQSDB8bIeRA3g HTTP/1.1" 200 -
+[2025-06-17 22:51:08,634] INFO in _internal:  * Detected change in '/workspaces/ProjectHoney/honeypot.py', reloading
+[2025-06-17 22:51:08,860] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:51:10,230] INFO in app: Application starting up...
+[2025-06-17 22:51:10,242] WARNING in _internal:  * Debugger is active!
+[2025-06-17 22:51:10,242] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 22:51:58,537] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 22:51:58,538] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 22:51:58,542] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 22:51:58,542] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 22:51:58,542] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 22:51:58,542] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 22:51:58,542] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 22:51:58,784] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 22:51:58,785] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 22:51:58,788] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 22:51:58,789] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 22:51:58,789] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 22:51:58,789] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 22:51:58,789] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 22:52:11,609] INFO in app: Application starting up...
+[2025-06-17 22:52:11,624] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 22:52:11,624] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 22:52:11,624] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:52:12,899] INFO in app: Application starting up...
+[2025-06-17 22:52:12,911] WARNING in _internal:  * Debugger is active!
+[2025-06-17 22:52:12,911] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 22:52:18,508] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:18] "GET / HTTP/1.1" 200 -
+[2025-06-17 22:52:18,817] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:52:19,161] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:52:19,166] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:19] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:52:20,705] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:20] "GET /register HTTP/1.1" 200 -
+[2025-06-17 22:52:21,185] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:52:21,196] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:21] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:52:22,957] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:22] "GET /login HTTP/1.1" 200 -
+[2025-06-17 22:52:23,244] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:23] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:52:23,546] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:52:23,550] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:23] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:52:25,666] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 22:52:25,667] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:25] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 22:52:25,976] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:25] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+[2025-06-17 22:52:26,225] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:26] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+[2025-06-17 22:52:26,244] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:26] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:52:26,533] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:52:26] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png&s=tce4fSsDgEyyy2cmaxKm HTTP/1.1" 200 -
+[2025-06-17 22:52:39,414] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 22:52:39,415] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 22:52:39,420] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 22:52:39,420] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 22:52:39,420] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 22:52:39,420] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 22:52:39,420] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 22:52:39,676] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 22:52:39,676] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 22:52:39,683] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 22:52:39,683] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 22:52:39,683] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 22:52:39,683] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 22:52:39,683] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 22:57:49,025] INFO in app: Application starting up...
+[2025-06-17 22:57:49,038] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 22:57:49,038] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 22:57:49,039] INFO in _internal:  * Restarting with stat
+[2025-06-17 22:57:50,353] INFO in app: Application starting up...
+[2025-06-17 22:57:50,365] WARNING in _internal:  * Debugger is active!
+[2025-06-17 22:57:50,365] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 22:57:55,100] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:55] "GET / HTTP/1.1" 200 -
+[2025-06-17 22:57:55,481] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:55] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:57:56,034] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:57:56,039] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:56] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:57:57,357] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:57] "GET /register HTTP/1.1" 200 -
+[2025-06-17 22:57:57,803] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:57:57,807] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:57] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:57:59,410] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:59] "GET /login HTTP/1.1" 200 -
+[2025-06-17 22:57:59,749] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:57:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:58:00,037] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 22:58:00,040] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:58:00] "[35m[1mGET /favicon.ico HTTP/1.1[0m" 500 -
+[2025-06-17 22:58:01,662] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 22:58:01,663] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:58:01] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 22:58:01,833] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:58:01] "[35m[1mGET /dashboard HTTP/1.1[0m" 500 -
+[2025-06-17 22:58:02,084] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:58:02] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=debugger.js HTTP/1.1[0m" 304 -
+[2025-06-17 22:58:02,087] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:58:02] "[36mGET /dashboard?__debugger__=yes&cmd=resource&f=style.css HTTP/1.1[0m" 304 -
+[2025-06-17 22:58:02,481] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 22:58:02] "GET /dashboard?__debugger__=yes&cmd=resource&f=console.png&s=J3fI5Ak0YguPKku8n2Uy HTTP/1.1" 200 -
+[2025-06-17 23:02:24,921] INFO in _internal:  * Detected change in '/workspaces/ProjectHoney/app.py', reloading
+[2025-06-17 23:02:25,145] INFO in _internal:  * Restarting with stat
+[2025-06-17 23:02:26,502] INFO in app: Application starting up...
+[2025-06-17 23:02:26,513] WARNING in _internal:  * Debugger is active!
+[2025-06-17 23:02:26,514] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 23:02:31,060] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 23:02:31,060] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 23:02:31,064] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 23:02:31,064] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 23:02:31,064] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 23:02:31,064] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 23:02:31,065] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 23:02:31,307] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 23:02:31,307] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 23:02:31,311] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 23:02:31,311] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 23:02:31,311] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 23:02:31,311] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 23:02:31,312] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 23:02:41,605] INFO in app: Application starting up...
+[2025-06-17 23:02:41,618] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 23:02:41,618] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 23:02:41,619] INFO in _internal:  * Restarting with stat
+[2025-06-17 23:02:42,857] INFO in app: Application starting up...
+[2025-06-17 23:02:42,870] WARNING in _internal:  * Debugger is active!
+[2025-06-17 23:02:42,870] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 23:02:52,165] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:02:52] "GET / HTTP/1.1" 200 -
+[2025-06-17 23:02:52,508] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:02:52] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:02:52,832] WARNING in app: 404 Not Found triggered for path: /favicon.ico from 127.0.0.1
+[2025-06-17 23:02:52,832] WARNING in honeypot: AnomalyDetector not initialized. Skipping AI prediction.
+[2025-06-17 23:02:52,832] WARNING in honeypot: HoneypotRLAgent not initialized. Skipping RL action determination.
+[2025-06-17 23:02:52,838] INFO in honeypot: Attack logged: IP=127.0.0.1, Path=/favicon.ico, AI=Detection_Error, RL=log, Geo: N/A, Local
+[2025-06-17 23:02:52,839] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:02:52] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+[2025-06-17 23:02:54,918] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:02:54] "GET /register HTTP/1.1" 200 -
+[2025-06-17 23:02:57,686] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:02:57] "GET /login HTTP/1.1" 200 -
+[2025-06-17 23:02:58,103] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:02:58] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:03:00,065] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 23:03:00,066] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:03:00] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 23:03:00,377] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:03:00] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 23:03:00,687] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:03:00] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:03:07,391] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:03:07] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 23:05:14,861] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:05:14] "GET /attack_logs HTTP/1.1" 200 -
+[2025-06-17 23:05:27,470] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:05:27] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 23:06:38,731] INFO in app: Application starting up...
+[2025-06-17 23:13:54,037] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 23:13:54,037] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 23:13:54,043] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 23:13:54,044] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 23:13:54,044] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 23:13:54,044] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 23:13:54,044] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 23:13:54,291] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 23:13:54,291] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 23:13:54,295] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 23:13:54,295] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 23:13:54,295] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 23:13:54,295] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 23:13:54,295] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 23:32:02,979] INFO in app: Application starting up...
+[2025-06-17 23:33:59,954] INFO in app: Application starting up...
+[2025-06-17 23:33:59,968] INFO in _internal: [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+[2025-06-17 23:33:59,968] INFO in _internal: [33mPress CTRL+C to quit[0m
+[2025-06-17 23:33:59,968] INFO in _internal:  * Restarting with stat
+[2025-06-17 23:34:01,316] INFO in app: Application starting up...
+[2025-06-17 23:34:01,329] WARNING in _internal:  * Debugger is active!
+[2025-06-17 23:34:01,329] INFO in _internal:  * Debugger PIN: 298-128-417
+[2025-06-17 23:34:18,573] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:18] "GET / HTTP/1.1" 200 -
+[2025-06-17 23:34:18,921] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:34:20,403] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:20] "GET /register HTTP/1.1" 200 -
+[2025-06-17 23:34:22,559] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:22] "GET /login HTTP/1.1" 200 -
+[2025-06-17 23:34:22,868] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:22] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:34:25,066] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 23:34:25,068] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:25] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 23:34:25,415] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:25] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 23:34:25,742] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:25] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:34:31,869] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:31] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 23:34:45,222] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:45] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 23:34:48,830] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:48] "[32mGET /logout HTTP/1.1[0m" 302 -
+[2025-06-17 23:34:49,159] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:49] "GET /home HTTP/1.1" 200 -
+[2025-06-17 23:34:49,533] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:49] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:34:53,356] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:53] "GET /register HTTP/1.1" 200 -
+[2025-06-17 23:34:55,143] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:55] "GET /login HTTP/1.1" 200 -
+[2025-06-17 23:34:55,441] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:55] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:34:58,959] INFO in app: Successful login for user: admin from IP: 127.0.0.1
+[2025-06-17 23:34:58,960] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:58] "[32mPOST /login HTTP/1.1[0m" 302 -
+[2025-06-17 23:34:59,238] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:59] "GET /dashboard HTTP/1.1" 200 -
+[2025-06-17 23:34:59,484] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:34:59] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:35:04,682] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:04] "GET /live_attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:04,878] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:04] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:35:05,053] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:05] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:15,059] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:15] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:18,460] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:18] "GET /live_attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:18,686] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:18] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:35:18,865] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:18] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:29,335] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:29] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:29,589] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:29] "GET /attack_logs HTTP/1.1" 200 -
+[2025-06-17 23:35:32,410] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:32] "GET /admin_dashboard HTTP/1.1" 200 -
+[2025-06-17 23:35:38,876] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:38] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:48,890] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:48] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:35:58,880] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:35:58] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:36:08,863] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:36:08] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:36:18,989] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:36:18] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:36:29,345] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:36:29] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:36:39,338] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:36:39] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:36:49,365] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:36:49] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:36:59,411] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:36:59] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:37:09,335] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:37:09] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:37:19,342] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:37:19] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:37:37,372] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:37:37] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:38:37,878] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:38:37] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:38:59,368] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:38:59] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:09,428] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:09] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:19,442] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:19] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:29,413] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:29] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:37,390] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:37] "GET /live_attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:37,819] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:37] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+[2025-06-17 23:39:38,504] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:38] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:49,446] INFO in _internal: 127.0.0.1 - - [17/Jun/2025 23:39:49] "GET /api/attacks HTTP/1.1" 200 -
+[2025-06-17 23:39:55,619] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 23:39:55,619] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 23:39:55,625] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 23:39:55,625] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 23:39:55,625] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 23:39:55,625] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 23:39:55,626] INFO in app: Honeypot AI/RL models initialized.
+[2025-06-17 23:39:55,873] INFO in app: Existing users found. Skipping default admin creation.
+[2025-06-17 23:39:55,874] INFO in honeypot: AnomalyDetector initialized. Preparing to train a basic ML model.
+[2025-06-17 23:39:55,878] INFO in honeypot: Anomaly Detector model trained on dummy data.
+[2025-06-17 23:39:55,878] INFO in honeypot: Anomaly Detector model loaded successfully.
+[2025-06-17 23:39:55,878] INFO in honeypot: HoneypotRLAgent initialized. (Rule-based Deception Logic)
+[2025-06-17 23:39:55,878] INFO in honeypot: RL Agent model loaded successfully.
+[2025-06-17 23:39:55,878] INFO in app: Honeypot AI/RL models initialized.

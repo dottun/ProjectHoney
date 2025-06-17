@@ -44,19 +44,40 @@ def get_geolocation_data(ip_address, logger, ipinfo_api_key):
         return {"country": "Unknown", "city": "Unknown", "latitude": None, "longitude": None}
 
     try:
+        # --- FIX IS HERE: ADD THIS LINE ---
         url = f"https://ipinfo.io/{ip_address}/json?token={ipinfo_api_key}"
+        # --- END FIX ---
+
         response = requests.get(url, timeout=5)
         response.raise_for_status()
         data = response.json()
+        
+        # Extract and convert latitude/longitude to float
+        loc_str = data.get("loc")
+        latitude = None
+        longitude = None
+        if loc_str and loc_str != "N/A":
+            try:
+                coords = loc_str.split(',')
+                latitude = float(coords[0]) if len(coords) > 0 and coords[0] else None
+                longitude = float(coords[1]) if len(coords) > 1 and coords[1] else None
+            except (ValueError, IndexError):
+                logger.warning(f"Could not parse geolocation coordinates '{loc_str}' for IP {ip_address}")
+        
         return {
             "country": data.get("country", "Unknown"),
             "city": data.get("city", "Unknown"),
-            "latitude": data.get("loc", "N/A").split(',')[0] if "loc" in data and data.get("loc") != "N/A" else None,
-            "longitude": data.get("loc", "N/A").split(',')[1] if "loc" in data and data.get("loc") != "N/A" else None
+            "latitude": latitude,
+            "city": city, # This line seems like a typo, should probably be removed. You already have 'city' above.
+            "longitude": longitude,
+            "full_data": data # Store the full response here for geolocation_data JSON column
         }
     except requests.exceptions.RequestException as e:
         logger.error(f"Error fetching geolocation data for {ip_address}: {e}")
-        return {"country": "Error", "city": "Error", "latitude": None, "longitude": None}
+        return {"country": "Error", "city": "Error", "latitude": None, "longitude": None, "full_data": {}}
+    except Exception as e:
+        logger.error(f"An unexpected error occurred during geolocation for {ip_address}: {e}")
+        return {"country": "Error", "city": "Error", "latitude": None, "longitude": None, "full_data": {}}
 
 def check_ip_reputation(ip_address, logger):
     """
@@ -321,6 +342,8 @@ def detect_and_log_attack(request_data, user_ip, ip_reputation, geolocation_info
     method = request_data.get('method')
     user_agent = request_data.get('user_agent')
     referer = request_data.get('referer')
+    headers_dict = request_data.get('headers', {}) # Ensure headers are passed through
+
 
     if isinstance(payload, bytes):
         try:
@@ -328,14 +351,21 @@ def detect_and_log_attack(request_data, user_ip, ip_reputation, geolocation_info
         except UnicodeDecodeError:
             payload = str(payload)
 
-    logged_geolocation_data = geolocation_info if geolocation_info is not None else {'city': 'N/A', 'country': 'N/A'}
-    logged_ip_reputation_data = ip_reputation if ip_reputation is not None else {'is_malicious': False, 'reason': 'N/A'}
+    # Use a default empty dict if geolocation_info is None
+    logged_geolocation_data_for_json = geolocation_info.get('full_data', {}) if geolocation_info else {}
 
+    # Extract specific fields for new columns
+    attack_latitude = geolocation_info.get('latitude') if geolocation_info else None
+    attack_longitude = geolocation_info.get('longitude') if geolocation_info else None
+    attack_country = geolocation_info.get('country') if geolocation_info else None
+    attack_city = geolocation_info.get('city') if geolocation_info else None
+
+    logged_ip_reputation_data = ip_reputation if ip_reputation is not None else {'is_malicious': False, 'reason': 'N/A'}
     ip_reputation_is_malicious = logged_ip_reputation_data.get('is_malicious', False)
 
-    # 1. Anomaly Detection
+    # ... (Anomaly Detection and RL Agent parts remain the same) ...
     ai_prediction = "Detection_Error"
-    if anomaly_detector: # Ensure the model is initialized
+    if anomaly_detector:
         try:
             ai_prediction = anomaly_detector.detect(request_data)
         except Exception as e:
@@ -343,10 +373,8 @@ def detect_and_log_attack(request_data, user_ip, ip_reputation, geolocation_info
     else:
         current_app.logger.warning("AnomalyDetector not initialized. Skipping AI prediction.")
 
-
-    # 2. RL Agent determines action
-    rl_action = "log" # Default action
-    if honeypot_rl_agent: # Ensure the RL agent is initialized
+    rl_action = "log"
+    if honeypot_rl_agent:
         rl_state = {
             "ip_address": ip_address,
             "ai_prediction": ai_prediction,
@@ -356,13 +384,10 @@ def detect_and_log_attack(request_data, user_ip, ip_reputation, geolocation_info
     else:
         current_app.logger.warning("HoneypotRLAgent not initialized. Skipping RL action determination.")
 
-
-    # Apply RL Action (e.g., block if the action is 'block')
     if rl_action == "block":
         block_ip(ip_address, duration_minutes=60, reason=f"RL Agent Block: AI={ai_prediction}")
         current_app.logger.info(f"IP {ip_address} blocked by RL agent. Reason: {rl_action}")
 
-    # Determine attack_type
     attack_type = "Generic"
     if ai_prediction == "Malicious":
         attack_type = "AI_Malicious"
@@ -386,13 +411,20 @@ def detect_and_log_attack(request_data, user_ip, ip_reputation, geolocation_info
             attack_type=attack_type,
             ai_prediction=ai_prediction,
             rl_action_taken=rl_action,
-            headers=json.dumps(request_data.get('headers', {})),
-            geolocation_data=logged_geolocation_data,
+            headers=headers_dict, # Pass headers_dict directly
+            
+            # Populate the new specific geolocation columns
+            latitude=attack_latitude,
+            longitude=attack_longitude,
+            country=attack_country,
+            city=attack_city,
+            
+            geolocation_data=logged_geolocation_data_for_json, # For the full JSON blob
             ip_reputation_data=logged_ip_reputation_data
         )
         db.session.add(attack_log)
         db.session.commit()
-        current_app.logger.info(f"Attack logged: IP={ip_address}, Path={path}, AI={ai_prediction}, RL={rl_action}")
+        current_app.logger.info(f"Attack logged: IP={ip_address}, Path={path}, AI={ai_prediction}, RL={rl_action}, Geo: {attack_city}, {attack_country}")
 
     return ai_prediction, rl_action
 

@@ -64,6 +64,12 @@ class Attack(db.Model):
     geolocation_data = db.Column(JsonEncodedDict, nullable=True) # Store dict as JSON
     ip_reputation_data = db.Column(JsonEncodedDict, nullable=True) # Store dict as JSON
     attack_type = db.Column(db.String(100), nullable=True) # e.g., 'SQL_Injection_Attempt', 'XSS_Attempt'
+ # --- NEW COLUMNS FOR GEOLOCATION AND SERVICE FOR EASIER QUERYING ---
+    latitude = db.Column(db.Float, nullable=True)
+    longitude = db.Column(db.Float, nullable=True)
+    country = db.Column(db.String(100), nullable=True)
+    city = db.Column(db.String(100), nullable=True)
+    
 
     def __repr__(self):
         return f'<Attack {self.ip_address} - {self.attack_type} at {self.timestamp}>'

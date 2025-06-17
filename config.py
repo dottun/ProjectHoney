@@ -16,7 +16,7 @@ class Config:
     REMEMBER_COOKIE_DURATION = timedelta(days=7)
 
     # API Keys
-    IPINFO_API_KEY = os.environ.get('IPINFO_API_KEY', 'YOUR_IPINFO_API_KEY') # Replace with your actual key or set as env var
+    IPINFO_API_KEY = os.environ.get('IPINFO_API_KEY', 'ef7810b0485258') # Replace with your actual key or set as env var
 
     # Email Configuration for Alerts (Flask-Mail)
     MAIL_SERVER = os.environ.get('MAIL_SERVER', 'smtp.gmail.com') # e.g., 'smtp.gmail.com' for Gmail
