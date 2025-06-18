@@ -401,16 +401,11 @@
 
         <section class="stats-grid">
             <div class="stat-card">
-                <h3>INTERACTIONS</h3>
-                <div class="stat-number" id="interactions">{{ "{:,}".format(total_interactions) }}</div>
-            </div>
-            <div class="stat-card">
                 <h3>UNIQUE IPs</h3>
-                <div class="stat-number" id="ips">{{ unique_ips }}</div>
-            </div>
+            <div class="stat-number" id="ips">{{ unique_ips | default(0) }}</div>
             <div class="stat-card">
                 <h3>ALERTS</h3>
-                <div class="stat-number" id="alerts">{{ total_alerts }}</div>
+                <div class="stat-number" id="alerts">{{ total_alerts | default(0) }}</div>
             </div>
         </section>
 
@@ -456,20 +451,22 @@
                 </div>
 
                 <div class="panel">
-                    <h3>AI Functionalities</h3>
-                    <ul class="function-list">
-                        {% for key, value in ai_insights.items() %}
-                            <li>
-                                {{ key }}
-                                <span class="status">{{ value }}</span>
-                            </li>
-                        {% else %}
-                            <li style="color: var(--text-muted);">No AI insights available.</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        </div>
+    <h3>AI Functionalities</h3>
+    <ul class="function-list">
+        {% for insight in ai_insights %}
+            <li>
+                <h4>{{ insight.category }}</h4>
+                <ul>
+                {% for key, value in insight.data.items() %}
+                    <li>{{ key }}: <span class="status">{{ value }}</span></li>
+                {% endfor %}
+                </ul>
+            </li>
+        {% else %}
+            <li style="color: var(--text-muted);">No AI insights available.</li>
+        {% endfor %}
+    </ul>
+</div>
 
         <div class="panel ip-management-section" id="settings">
             <h3>IP Management</h3>
