@@ -1,0 +1,297 @@
+{# templates/live_attacks.html #}
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block head_extra %} {# <--- ENSURE THIS IS head_extra #}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #mapid { height: 400px; width: 100%; border: 1px solid #ccc; margin-bottom: 20px; }
+        .chart-container { width: 100%; max-width: 600px; margin-bottom: 20px; }
+        .notification-table-container { max-height: 400px; overflow-y: auto; }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h2>{{ title }}</h2>
+
+        <div class="alert alert-info" role="alert">
+            This page shows live attack notifications and analytics. Data refreshes every 10 seconds.
+        </div>
+
+        <h3 class="mt-4">Geographic Distribution of Attacks</h3>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <div class="card-header">Attack Locations</div>
+                    <div class="card-body">
+                        <div id="mapid"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">Attacks by Type</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="attackTypeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">Attacks Over Time (Last 30 Days)</div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="attacksOverTimeChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Live Attack Notifications</h3>
+        <div class="notification-table-container">
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>IP Address</th>
+                        <th>Country</th>
+                        <th>City</th>
+                        <th>Path</th>
+                        <th>Method</th>
+                        <th>Attack Type</th>
+                        <th>AI Prediction</th>
+                        <th>RL Action</th>
+                    </tr>
+                </thead>
+                <tbody id="attackNotificationsTableBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <h3 class="mt-4">Top Attackers</h3>
+        <div class="card mb-4">
+            <div class="card-body">
+                <ul id="topAttackersList">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+        </div>
+
+        <h3 class="mt-4">Top Attacked Services/Paths</h3>
+        <div class="card mb-4">
+            <div class="card-body">
+                <ul id="topServicesList">
+                    <li>Loading...</li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // Store chart instances globally to be able to destroy/update them
+        let mapInstance = null;
+        let attackTypeChartInstance = null;
+        let attacksOverTimeChartInstance = null;
+
+        function fetchDataAndRenderCharts() {
+            fetch('/api/attacks')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched attack data:", data); // For debugging
+
+                    // Sort data by timestamp descending for the table
+                    data.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    // Populate Notifications Table
+                    const tableBody = document.getElementById('attackNotificationsTableBody');
+                    tableBody.innerHTML = ''; // Clear existing rows
+                    const displayLimit = 20; // Display only the most recent 20 attacks in the table
+                    data.slice(0, displayLimit).forEach(attack => {
+                        const row = tableBody.insertRow();
+                        row.insertCell().textContent = new Date(attack.timestamp).toLocaleString();
+                        row.insertCell().textContent = attack.ip_address;
+                        row.insertCell().textContent = attack.country;
+                        row.insertCell().textContent = attack.city;
+                        row.insertCell().textContent = attack.path;
+                        row.insertCell().textContent = attack.method;
+                        row.insertCell().textContent = attack.attack_type;
+                        row.insertCell().textContent = attack.ai_prediction;
+                        row.insertCell().textContent = attack.rl_action_taken;
+                    });
+
+                    // --- Map Initialization/Update (Leaflet.js) ---
+                    if (mapInstance) {
+                        mapInstance.remove(); // Destroy existing map to re-initialize
+                    }
+                    mapInstance = L.map('mapid').setView([0, 0], 2); // Centered on 0,0 with zoom level 2
+
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(mapInstance);
+
+                    // Collect all valid lat/lon for fitting map bounds later
+                    const validLatLngs = [];
+                    data.forEach(attack => {
+                        if (attack.latitude !== null && attack.longitude !== null && attack.country !== 'Local') { // Only add non-local IPs to map
+                            const latLng = [attack.latitude, attack.longitude];
+                            validLatLngs.push(latLng);
+                            L.marker(latLng)
+                             .addTo(mapInstance)
+                             .bindPopup(`<b>IP:</b> ${attack.ip_address}<br><b>Path:</b> ${attack.path}<br><b>Country:</b> ${attack.country}<br><b>City:</b> ${attack.city || 'N/A'}`);
+                        }
+                    });
+
+                    // Adjust map view to fit all markers if there are any
+                    if (validLatLngs.length > 0) {
+                        mapInstance.fitBounds(validLatLngs);
+                    }
+
+
+                    // --- Chart.js Data Preparation & Update ---
+
+                    // Attack Types Chart
+                    const attackTypeCounts = {};
+                    data.forEach(attack => {
+                        const type = attack.attack_type || 'Unknown';
+                        attackTypeCounts[type] = (attackTypeCounts[type] || 0) + 1;
+                    });
+                    const attackTypeLabels = Object.keys(attackTypeCounts);
+                    const attackTypeValues = Object.values(attackTypeCounts);
+
+                    if (attackTypeChartInstance) {
+                        attackTypeChartInstance.destroy(); // Destroy existing chart
+                    }
+                    const attackTypeCtx = document.getElementById('attackTypeChart').getContext('2d');
+                    attackTypeChartInstance = new Chart(attackTypeCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: attackTypeLabels,
+                            datasets: [{
+                                data: attackTypeValues,
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)',
+                                    'rgba(75, 192, 192, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)',
+                                    'rgba(199, 199, 199, 0.7)', 'rgba(83, 102, 255, 0.7)' // More colors
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)',
+                                    'rgba(199, 199, 199, 1)', 'rgba(83, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { position: 'top' },
+                                title: { display: true, text: 'Distribution of Attack Types' }
+                            }
+                        }
+                    });
+
+                    // Attacks Over Time Chart
+                    const attacksPerDay = {};
+                    data.forEach(attack => {
+                        const date = new Date(attack.timestamp).toLocaleDateString('en-CA');
+                        attacksPerDay[date] = (attacksPerDay[date] || 0) + 1;
+                    });
+                    const sortedDates = Object.keys(attacksPerDay).sort();
+                    const attacksOverTimeValues = sortedDates.map(date => attacksPerDay[date]);
+
+                    if (attacksOverTimeChartInstance) {
+                        attacksOverTimeChartInstance.destroy(); // Destroy existing chart
+                    }
+                    const attacksOverTimeCtx = document.getElementById('attacksOverTimeChart').getContext('2d');
+                    attacksOverTimeChartInstance = new Chart(attacksOverTimeCtx, {
+                        type: 'line',
+                        data: {
+                            labels: sortedDates,
+                            datasets: [{
+                                label: 'Number of Attacks',
+                                data: attacksOverTimeValues,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                borderWidth: 1,
+                                fill: true,
+                                tension: 0.1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: false },
+                                title: { display: true, text: 'Attacks Over Time' }
+                            },
+                            scales: {
+                                x: { type: 'category', title: { display: true, text: 'Date' } },
+                                y: {
+                                    beginAtZero: true,
+                                    title: { display: true, text: 'Number of Attacks' },
+                                    ticks: { stepSize: 1 }
+                                }
+                            }
+                        }
+                    });
+
+                    // --- Top Attackers/Services Logic ---
+                    const ipCounts = {};
+                    const pathCounts = {};
+                    data.forEach(attack => {
+                        ipCounts[attack.ip_address] = (ipCounts[attack.ip_address] || 0) + 1;
+                        pathCounts[attack.path] = (pathCounts[attack.path] || 0) + 1;
+                    });
+
+                    // Convert to array, sort, and display top 5
+                    const sortedIps = Object.entries(ipCounts).sort(([,a],[,b]) => b-a).slice(0, 5);
+                    const topAttackersList = document.getElementById('topAttackersList');
+                    topAttackersList.innerHTML = '';
+                    if (sortedIps.length === 0) {
+                        topAttackersList.innerHTML = '<li>No attacker data yet.</li>';
+                    } else {
+                        sortedIps.forEach(([ip, count]) => {
+                            const li = document.createElement('li');
+                            li.textContent = `<span class="math-inline">\{ip\} \(</span>{count} attacks)`;
+                            topAttackersList.appendChild(li);
+                        });
+                    }
+
+                    const sortedPaths = Object.entries(pathCounts).sort(([,a],[,b]) => b-a).slice(0, 5);
+                    const topServicesList = document.getElementById('topServicesList');
+                    topServicesList.innerHTML = '';
+                    if (sortedPaths.length === 0) {
+                        topServicesList.innerHTML = '<li>No service attack data yet.</li>';
+                    } else {
+                        sortedPaths.forEach(([path, count]) => {
+                            const li = document.createElement('li');
+                            li.textContent = `<span class="math-inline">\{path\} \(</span>{count} hits)`;
+                            topServicesList.appendChild(li);
+                        });
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error fetching attack data:', error);
+                });
+        }
+
+        // Initial fetch and render
+        fetchDataAndRenderCharts();
+
+        // Set up auto-refresh every 10 seconds
+        setInterval(fetchDataAndRenderCharts, 10000); // Refreshes every 10 seconds
+
+    </script>
+{% endblock %}

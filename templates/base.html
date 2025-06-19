@@ -11,38 +11,48 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{{ url_for('home') }}">AI Honeypot</a>
+            {# CORRECTED: Use 'root_redirect' for the main brand link #}
+            <a class="navbar-brand" href="{{ url_for('welcome') }}">AI Honeypot</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
+                {% if current_user.is_authenticated %} {# ONLY ONE AUTHENTICATED CHECK HERE #}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('home') }}">Home</a>
+                        {# CORRECTED: Use 'root_redirect' for the Home link #}
+                        <a class="nav-link" href="{{ url_for('welcome') }}">Home</a>
                     </li>
-                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('live_attacks_dashboard') }}">Live Attacks</a>
+                    </li>
+                    {% if current_user.is_admin %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                            {# Corrected: Link to admin_dashboard endpoint #}
+                            <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
                         </li>
-                        {% if current_user.is_admin %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('admin_dashboard') }}">Admin Panel</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('attack_logs') }}">Attack Logs</a>
-                            </li>
-                        {% endif %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                       <li class="nav-item">
+                            {# New: Link to admin_settings endpoint #}
+                            
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('register') }}">Sign Up</a>
+                            <a class="nav-link" href="{{ url_for('attack_logs') }}">Attack Logs</a>
                         </li>
                     {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+                    </li>
+                {% else %} {# This 'else' now correctly pairs with the single 'if current_user.is_authenticated' #}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('register') }}">Sign Up</a>
+                    </li>
+                {% endif %}
                 </ul>
             </div>
         </div>

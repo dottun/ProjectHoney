@@ -1,46 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }}</title>
-</head>
-<body>
-    <h1>Attack Logs</h1>
-    {% if all_attacks %}
-        <table border="1">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Timestamp</th>
-                    <th>IP Address</th>
-                    <th>Path</th>
-                    <th>Method</th>
-                    <th>Attack Type</th>
-                    <th>AI Prediction</th>
-                    <th>RL Action Taken</th>
-                    <th>Payload</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for attack in all_attacks %}
-                <tr>
-                    <td>{{ attack.id }}</td>
-                    <td>{{ attack.timestamp }}</td>
-                    <td>{{ attack.ip_address }}</td>
-                    <td>{{ attack.path }}</td>
-                    <td>{{ attack.method }}</td>
-                    <td>{{ attack.attack_type }}</td>
-                    <td>{{ attack.ai_prediction }}</td>
-                    <td>{{ attack.rl_action_taken }}</td>
-                    <td>{{ attack.payload }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% extends "base.html" %}
+
+{% block content %}
+    <h2 class="mt-4 mb-3">Attack Logs</h2>
+
+    {% if attacks %}
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>IP Address</th>
+                        <th>Timestamp</th>
+                        <th>Path</th>
+                        <th>AI Prediction</th>
+                        <th>RL Action</th>
+                        {# Add more headers if you have more columns in your Attack model #}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attack in attacks %}
+                    <tr>
+                        <td>{{ attack.id }}</td>
+                        <td>{{ attack.ip_address }}</td>
+                        <td>{{ attack.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                        <td>{{ attack.path | default('N/A') }}</td>
+                        <td>{{ attack.ai_prediction | default('N/A') }}</td>
+                        <td>{{ attack.rl_action_taken | default('N/A') }}</td>
+                        {# Render more attack data here #}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     {% else %}
-        <p>No attack logs available.</p>
+        <div class="alert alert-info">No attack logs recorded yet.</div>
     {% endif %}
-    <p><a href="{{ url_for('admin_dashboard') }}">Back to Admin Dashboard</a></p>
-</body>
-</html>
+{% endblock content %}
