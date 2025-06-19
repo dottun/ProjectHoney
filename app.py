@@ -177,11 +177,26 @@ def create_app(config_class=None):
         sorted_top_ips = sorted(top_ips.items(), key=lambda item: item[1], reverse=True)[:5]
         top_ip_labels = [ip for ip, count in sorted_top_ips]
         top_ip_counts = [count for ip, count in sorted_top_ips]
+        
 
-        geographic_distribution_data = [
-            {'name': country, 'lat': data['latitude'], 'lon': data['longitude'], 'count': data['count']}
-            for country, data in geographic_distribution.items()
-        ]
+        
+        geographic_distribution_data = []
+        total_geo_attacks = sum(data['count'] for data in geographic_distribution.values())
+
+        if total_geo_attacks > 0:
+            sorted_geographic_countries = sorted(geographic_distribution.items(), key=lambda item: item[1]['count'], reverse=True)
+            for country, data in sorted_geographic_countries:
+                count = data['count']
+                percentage = (count / total_geo_attacks) * 100
+                width_style = f"{percentage:.2f}%"
+                geographic_distribution_data.append({
+                    'country': country,
+                    'count': count,
+                    'percentage': f"{percentage:.2f}%",
+                    'width': width_style,
+                    'latitude': data['latitude'],
+                    'longitude': data['longitude']
+            })
 
         ai_insights = [
             {'category': 'AI Predictions', 'data': ai_predictions},
@@ -199,10 +214,78 @@ def create_app(config_class=None):
             attack_chart_data=json.dumps(attack_chart_data),
             top_ip_labels=json.dumps(top_ip_labels),
             top_ip_counts=json.dumps(top_ip_counts),
-            geographic_distribution_data=json.dumps(geographic_distribution_data),
+            geographic_distribution_data=(geographic_distribution_data),
             ai_insights=ai_insights,
             ai_alert_notes=ai_alert_notes
         )
+
+    # app.py (inside your create_app function)
+
+    @app.route('/log_attack', methods=['POST'])
+    def log_attack():
+        """
+        Logs a simulated or detected attack into the database.
+        Requires JSON data with 'ip_address', 'path', and 'method'.
+        Other fields like 'attack_type', 'payload', 'user_agent' are optional.
+        """
+        data = request.json
+        if not data:
+            return jsonify({'message': 'No data provided'}), 400
+
+        ip_address = data.get('ip_address')
+        path = data.get('path')
+        method = data.get('method')
+
+        # Get optional fields. Provide default None if not present.
+        attack_type = data.get('attack_type')
+        payload = data.get('payload')
+        user_agent = data.get('user_agent')
+        referer = data.get('referer')
+        ai_prediction = data.get('ai_prediction')
+        rl_action_taken = data.get('rl_action_taken')
+        headers = data.get('headers')
+        geolocation_data = data.get('geolocation_data')
+        ip_reputation_data = data.get('ip_reputation_data')
+        latitude = data.get('latitude')
+        longitude = data.get('longitude')
+        country = data.get('country')
+        city = data.get('city')
+        attack_vector = data.get('attack_vector') # Make sure to get this if you plan to use it
+
+        # Ensure all REQUIRED fields are present
+        if not all([ip_address, path, method]): # <-- ONLY the NOT NULL fields are critical here
+            return jsonify({'message': 'Missing required fields (ip_address, path, method)'}), 400
+
+        try:
+            attack_log = Attack(
+                ip_address=ip_address,
+                path=path,
+                method=method,
+                # Optional fields (set to None if not provided)
+                attack_type=attack_type, # This maps to Attack.attack_type in your model
+                payload=payload,
+                user_agent=user_agent,
+                referer=referer,
+                ai_prediction=ai_prediction,
+                rl_action_taken=rl_action_taken,
+                headers=headers,
+                geolocation_data=geolocation_data,
+                ip_reputation_data=ip_reputation_data,
+                latitude=latitude,
+                longitude=longitude,
+                country=country,
+                city=city,
+                attack_vector=attack_vector # This maps to Attack.attack_vector in your model
+            )
+            db.session.add(attack_log)
+            db.session.commit()
+            return jsonify({'message': 'Attack logged successfully', 'attack_id': attack_log.id}), 201
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error logging attack: {e}")
+            return jsonify({'message': f'Internal server error: {e}'}), 500
+
+
 
     @app.route("/attack_logs")
     @login_required
@@ -247,27 +330,42 @@ def create_app(config_class=None):
         return render_template('live_attacks_dashboard.html', title='Live Attacks Dashboard')
 
     @app.route('/api/attacks')
-    @login_required
+    @login_required # Assuming this route is also login_required
     def api_attacks():
-        attacks = db.session.execute(db.select(Attack).order_by(Attack.timestamp.desc())).scalars().all()
-        attacks_data = []
+        # Adjust timedelta as needed, e.g., to fetch recent attacks for "live" view
+        time_frame = datetime.utcnow() - timedelta(minutes=5) # Example: last 5 minutes for live data
+        attacks = db.session.execute(
+            db.select(Attack)
+            .filter(Attack.timestamp >= time_frame) # Filter for recent attacks
+            .order_by(Attack.timestamp.desc())
+        ).scalars().all()
+
+        attack_data = []
         for attack in attacks:
-            attacks_data.append({
+            attack_data.append({
+                'id': attack.id,
                 'timestamp': attack.timestamp.isoformat(),
                 'ip_address': attack.ip_address,
+                'attack_type': attack.attack_type, # Include relevant nullable fields
+                'payload': attack.payload,
+                'user_agent': attack.user_agent,
+                'referer': attack.referer,
                 'path': attack.path,
                 'method': attack.method,
-                'port': attack.port,
-                'protocol': attack.protocol,
-                'country': attack.country,
-                'city': attack.city,
-                'latitude': attack.latitude,
-                'longitude': attack.longitude,
                 'ai_prediction': attack.ai_prediction,
                 'rl_action_taken': attack.rl_action_taken,
-                'attack_type': attack.attack_type
+                'headers': attack.headers, # JsonEncodedDict fields might need special handling if empty
+                'geolocation_data': attack.geolocation_data,
+                'ip_reputation_data': attack.ip_reputation_data,
+                'latitude': attack.latitude,
+                'longitude': attack.longitude,
+                'country': attack.country,
+                'city': attack.city,
+                'attack_vector': attack.attack_vector # Include this too if relevant
+                # REMOVE OR COMMENT OUT THIS LINE IF Attack model doesn't have 'port':
+                # 'port': attack.port,
             })
-        return jsonify(attacks_data)
+        return jsonify(attack_data)
 
     @app.route('/lookup_ip/<ip_address>')
     @login_required
