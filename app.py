@@ -4,41 +4,40 @@
 import json
 import logging
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-from flask_login import login_required, current_user, UserMixin
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
+from flask_login import login_required, current_user, UserMixin, logout_user, LoginManager
+from werkzeug.security import generate_password_hash, check_password_hash
 import requests # For IP info lookups
 
 # --- Import your initialized extensions from extensions.py ---
 from extensions import db, bcrypt, login_manager, migrate, mail
 
 # --- Import your models from models.py ---
-# This will now work because models.py imports 'db' from extensions.py, not app.py
 from models import User, BlockedIP, Attack
 
-# --- User Loader (CRUCIAL for Flask-Login) ---
-@login_manager.user_loader
-def load_user(user_id):
-    # This function must return a User object or None
-    # Using db.session.get for Flask-SQLAlchemy 3.x
-    return db.session.get(User, int(user_id))
-
 # --- Application Factory Function ---
-def create_app(config_class=None):
+def create_app(config_class=None): # app is defined within this scope
     app = Flask(__name__)
     if config_class:
         app.config.from_object(config_class)
-    else: # Fallback to a default Config if none is provided (e.g., for local testing)
+    else:
         class DefaultConfig:
             SECRET_KEY = 'your_super_secret_key_for_dev_CHANGE_THIS'
             SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
             SQLALCHEMY_TRACK_MODIFICATIONS = False
-            IPINFO_API_KEY = 'YOUR_IPINFO_API_KEY' # Get one from ipinfo.io
+            IPINFO_API_KEY = 'YOUR_IPINFO_API_KEY'
         app.config.from_object(DefaultConfig)
 
     # Initialize extensions with the app
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+
+    # User Loader must be defined within the context of the app created by create_app
+    @login_manager.user_loader
+    def load_user(user_id):
+        return db.session.get(User, int(user_id))
+
     migrate.init_app(app, db)
     mail.init_app(app)
 
@@ -46,21 +45,20 @@ def create_app(config_class=None):
     login_manager.login_view = 'login' # type: ignore
     login_manager.login_message_category = 'info' # type: ignore
 
-    # Basic logging setup
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-    # Helper function to get IP details using ipinfo.io
+    # Helper function (this should also be defined INSIDE create_app if it uses app.config or app.logger)
     def get_ip_details(ip_address):
         if not app.config.get('IPINFO_API_KEY'):
             app.logger.warning("IPINFO_API_KEY not set in config. IP details will be unavailable.")
             return {'country': 'N/A', 'city': 'N/A', 'latitude': None, 'longitude': None}
 
-        if ip_address in ['127.0.0.1', 'localhost']: # Handle local IPs
+        if ip_address in ['127.0.0.1', 'localhost']:
             return {'country': 'Local', 'city': 'Local', 'latitude': None, 'longitude': None}
 
         try:
             response = requests.get(f"https://ipinfo.io/{ip_address}/json?token={app.config['IPINFO_API_KEY']}")
-            response.raise_for_status() # Raise an HTTPError for bad responses (4xx or 5xx)
+            response.raise_for_status()
             data = response.json()
             loc = data.get('loc', '0,0').split(',')
             return {
@@ -72,11 +70,12 @@ def create_app(config_class=None):
         except requests.exceptions.RequestException as e:
             app.logger.error(f"Error fetching IP details for {ip_address}: {e}")
             return {'country': 'N/A', 'city': 'N/A', 'latitude': None, 'longitude': None}
-        except ValueError: # For float conversion errors
+        except ValueError:
             app.logger.error(f"Could not parse latitude/longitude for {ip_address}")
             return {'country': 'N/A', 'city': 'N/A', 'latitude': None, 'longitude': None}
 
-    # --- Routes ---
+
+    # --- ALL ROUTES GO HERE, INDENTED INSIDE THE create_app function ---
 
     @app.route("/")
     @app.route("/welcome")
@@ -116,9 +115,8 @@ def create_app(config_class=None):
         if request.method == 'POST':
             username = request.form.get('username')
             password = request.form.get('password')
-            user = User.query.filter_by(username=username).first()
+            user = db.session.execute(db.select(User).filter_by(username=username)).scalars().first() # Corrected query to use db.session.execute
             if user and bcrypt.check_password_hash(user.password_hash, password):
-                from flask_login import login_user
                 login_user(user)
                 flash('Login successful!', 'success')
                 next_page = request.args.get('next')
@@ -130,7 +128,6 @@ def create_app(config_class=None):
     @app.route("/logout")
     @login_required
     def logout():
-        from flask_login import logout_user
         logout_user()
         flash('You have been logged out.', 'info')
         return redirect(url_for('welcome'))
@@ -177,10 +174,9 @@ def create_app(config_class=None):
         sorted_top_ips = sorted(top_ips.items(), key=lambda item: item[1], reverse=True)[:5]
         top_ip_labels = [ip for ip, count in sorted_top_ips]
         top_ip_counts = [count for ip, count in sorted_top_ips]
-        
-        unique_ip_count = len(top_ips) # This gets the number of unique keys (IPs) in the dictionary
 
-        
+        unique_ip_count = len(top_ips)
+
         geographic_distribution_data = []
         total_geo_attacks = sum(data['count'] for data in geographic_distribution.values())
 
@@ -197,7 +193,7 @@ def create_app(config_class=None):
                     'width': width_style,
                     'latitude': data['latitude'],
                     'longitude': data['longitude']
-            })
+                })
 
         ai_insights = [
             {'category': 'AI Predictions', 'data': ai_predictions},
@@ -215,21 +211,66 @@ def create_app(config_class=None):
             attack_chart_data=json.dumps(attack_chart_data),
             top_ip_labels=json.dumps(top_ip_labels),
             top_ip_counts=json.dumps(top_ip_counts),
-            geographic_distribution_data=(geographic_distribution_data),
+            geographic_distribution_data=geographic_distribution_data,
             ai_insights=ai_insights,
             ai_alert_notes=ai_alert_notes,
             unique_ip_count=unique_ip_count
         )
 
-    # app.py (inside your create_app function)
+    # --- Fake Honeypot Login Page Routes ---
+    @app.route('/login_honeypot', methods=['GET'])
+    def serve_login_honeypot():
+        return render_template('login_honeypot.html')
+
+    @app.route('/honeypot_login_submit', methods=['POST'])
+    def honeypot_login_submit():
+        if request.is_json:
+            data = request.get_json()
+            username = data.get('username')
+            password = data.get('password')
+
+            ip_address = request.remote_addr
+            user_agent = request.headers.get('User-Agent')
+
+            # Use the get_ip_details helper function defined above
+            geo_data = get_ip_details(ip_address)
+            latitude = geo_data.get('latitude')
+            longitude = geo_data.get('longitude')
+            country = geo_data.get('country')
+            city = geo_data.get('city')
+
+            try:
+                new_attack = Attack(
+                    ip_address=ip_address,
+                    path='/login_honeypot',
+                    method='POST',
+                    attack_type='Login Attempt',
+                    payload=f"Username: {username}, Password: {password} (stolen from honeypot)",
+                    user_agent=user_agent,
+                    latitude=latitude,
+                    longitude=longitude,
+                    country=country,
+                    city=city,
+                    timestamp=datetime.utcnow(),
+                    ai_prediction='Possible Credential Stuffing',
+                    rl_action_taken='monitor'
+                )
+                db.session.add(new_attack)
+                db.session.commit()
+                app.logger.info(f"Logged fake login attempt from {ip_address}: User='{username}', Pass='{password}'")
+                flash(f"Login attempt logged for {username} from {ip_address}", "info")
+
+            except Exception as e:
+                db.session.rollback()
+                app.logger.error(f"Error logging honeypot login attempt from {ip_address}: {e}")
+                flash("An error occurred while logging the attempt.", "error")
+
+            return jsonify({"status": "failed", "message": "Invalid credentials. Please try again."}), 200
+
+        return jsonify({"error": "Request must be JSON"}), 400
 
     @app.route('/log_attack', methods=['POST'])
     def log_attack():
-        """
-        Logs a simulated or detected attack into the database.
-        Requires JSON data with 'ip_address', 'path', and 'method'.
-        Other fields like 'attack_type', 'payload', 'user_agent' are optional.
-        """
         data = request.json
         if not data:
             return jsonify({'message': 'No data provided'}), 400
@@ -238,7 +279,9 @@ def create_app(config_class=None):
         path = data.get('path')
         method = data.get('method')
 
-        # Get optional fields. Provide default None if not present.
+        if not all([ip_address, path, method]):
+            return jsonify({'message': 'Missing required fields (ip_address, path, method)'}), 400
+
         attack_type = data.get('attack_type')
         payload = data.get('payload')
         user_agent = data.get('user_agent')
@@ -246,48 +289,44 @@ def create_app(config_class=None):
         ai_prediction = data.get('ai_prediction')
         rl_action_taken = data.get('rl_action_taken')
         headers = data.get('headers')
-        geolocation_data = data.get('geolocation_data')
-        ip_reputation_data = data.get('ip_reputation_data')
-        latitude = data.get('latitude')
-        longitude = data.get('longitude')
-        country = data.get('country')
-        city = data.get('city')
-        attack_vector = data.get('attack_vector') # Make sure to get this if you plan to use it
+        
+        # Use the get_ip_details helper function for geolocation data
+        geo_data = get_ip_details(ip_address)
+        latitude = geo_data.get('latitude')
+        longitude = geo_data.get('longitude')
+        country = geo_data.get('country')
+        city = geo_data.get('city')
 
-        # Ensure all REQUIRED fields are present
-        if not all([ip_address, path, method]): # <-- ONLY the NOT NULL fields are critical here
-            return jsonify({'message': 'Missing required fields (ip_address, path, method)'}), 400
+        ip_reputation_data = data.get('ip_reputation_data') # This was previously passed directly
 
         try:
             attack_log = Attack(
                 ip_address=ip_address,
                 path=path,
                 method=method,
-                # Optional fields (set to None if not provided)
-                attack_type=attack_type, # This maps to Attack.attack_type in your model
+                attack_type=attack_type,
                 payload=payload,
                 user_agent=user_agent,
                 referer=referer,
                 ai_prediction=ai_prediction,
                 rl_action_taken=rl_action_taken,
                 headers=headers,
-                geolocation_data=geolocation_data,
+                geolocation_data=geolocation_data, # This would be captured by get_ip_details now
                 ip_reputation_data=ip_reputation_data,
                 latitude=latitude,
                 longitude=longitude,
                 country=country,
                 city=city,
-                attack_vector=attack_vector # This maps to Attack.attack_vector in your model
+                attack_vector=attack_vector
             )
             db.session.add(attack_log)
             db.session.commit()
+            app.logger.info(f"Manual attack logged successfully from {ip_address} on {path}")
             return jsonify({'message': 'Attack logged successfully', 'attack_id': attack_log.id}), 201
         except Exception as e:
             db.session.rollback()
-            print(f"Error logging attack: {e}")
+            app.logger.error(f"Error logging attack: {e}")
             return jsonify({'message': f'Internal server error: {e}'}), 500
-
-
 
     @app.route("/attack_logs")
     @login_required
@@ -332,13 +371,12 @@ def create_app(config_class=None):
         return render_template('live_attacks_dashboard.html', title='Live Attacks Dashboard')
 
     @app.route('/api/attacks')
-    @login_required # Assuming this route is also login_required
+    @login_required
     def api_attacks():
-        # Adjust timedelta as needed, e.g., to fetch recent attacks for "live" view
-        time_frame = datetime.utcnow() - timedelta(minutes=5) # Example: last 5 minutes for live data
+        time_frame = datetime.utcnow() - timedelta(minutes=5)
         attacks = db.session.execute(
             db.select(Attack)
-            .filter(Attack.timestamp >= time_frame) # Filter for recent attacks
+            .filter(Attack.timestamp >= time_frame)
             .order_by(Attack.timestamp.desc())
         ).scalars().all()
 
@@ -348,7 +386,7 @@ def create_app(config_class=None):
                 'id': attack.id,
                 'timestamp': attack.timestamp.isoformat(),
                 'ip_address': attack.ip_address,
-                'attack_type': attack.attack_type, # Include relevant nullable fields
+                'attack_type': attack.attack_type,
                 'payload': attack.payload,
                 'user_agent': attack.user_agent,
                 'referer': attack.referer,
@@ -356,16 +394,14 @@ def create_app(config_class=None):
                 'method': attack.method,
                 'ai_prediction': attack.ai_prediction,
                 'rl_action_taken': attack.rl_action_taken,
-                'headers': attack.headers, # JsonEncodedDict fields might need special handling if empty
+                'headers': attack.headers,
                 'geolocation_data': attack.geolocation_data,
                 'ip_reputation_data': attack.ip_reputation_data,
                 'latitude': attack.latitude,
                 'longitude': attack.longitude,
                 'country': attack.country,
                 'city': attack.city,
-                'attack_vector': attack.attack_vector # Include this too if relevant
-                # REMOVE OR COMMENT OUT THIS LINE IF Attack model doesn't have 'port':
-                # 'port': attack.port,
+                'attack_vector': attack.attack_vector
             })
         return jsonify(attack_data)
 
@@ -375,7 +411,7 @@ def create_app(config_class=None):
         details = get_ip_details(ip_address)
         return jsonify(details)
 
-    return app
+    return app # The app instance is returned here
 
 # --- How to run your app ---
 if __name__ == '__main__':

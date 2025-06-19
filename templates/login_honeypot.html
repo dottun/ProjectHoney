@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Portal</title>
+  <style>
+    body {
+      background-color: #0e0e0e;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      height: 100vh;
+      align-items: center;
+      justify-content: center;
+    }
+    .login-box {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #00ffe7;
+    }
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      background: #333;
+      border: none;
+      border-radius: 4px;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #00ffe7;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      color: black;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #00cccc;
+    }
+  </style>
+</head>
+<body>
+<div class="login-box">
+  <h2>Secure Login</h2>
+  <p id="message" style="text-align: center; margin-bottom: 10px; color: red;"></p> <form id="honeypotForm">
+    <input type="text" id="username" name="username" placeholder="Username" required>
+    <input type="password" id="password" name="password" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+</div>
+
+<script>
+    // Send login attempt to your honeypot backend
+    document.getElementById('honeypotForm').addEventListener('submit', function (e) {
+      e.preventDefault(); // Prevent the default form submission
+
+      const data = {
+        username: document.getElementById('username').value,
+        password: document.getElementById('password').value
+        // Remove timestamp from client-side; server will generate it for consistency
+      };
+
+      // Correct Flask honeypot endpoint
+      fetch('/honeypot_login_submit', { // <--- THIS IS THE CORRECTED URL!
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      .then(response => response.json()) // Parse the JSON response from Flask
+      .then(result => {
+        // Display the message from the Flask backend on the page
+        const messageElement = document.getElementById('message');
+        if (messageElement) {
+          messageElement.textContent = result.message; // "Invalid credentials. Please try again."
+          messageElement.style.color = 'red'; // Make it stand out
+        }
+      })
+      .catch(error => {
+        console.error('Error sending login attempt:', error);
+        // Fallback message if there's a network error
+        const messageElement = document.getElementById('message');
+        if (messageElement) {
+          messageElement.textContent = 'A network error occurred. Please try again.';
+          messageElement.style.color = 'orange';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+</body>
+</html>
