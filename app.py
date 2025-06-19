@@ -178,6 +178,7 @@ def create_app(config_class=None):
         top_ip_labels = [ip for ip, count in sorted_top_ips]
         top_ip_counts = [count for ip, count in sorted_top_ips]
         
+        unique_ip_count = len(top_ips) # This gets the number of unique keys (IPs) in the dictionary
 
         
         geographic_distribution_data = []
@@ -216,7 +217,8 @@ def create_app(config_class=None):
             top_ip_counts=json.dumps(top_ip_counts),
             geographic_distribution_data=(geographic_distribution_data),
             ai_insights=ai_insights,
-            ai_alert_notes=ai_alert_notes
+            ai_alert_notes=ai_alert_notes,
+            unique_ip_count=unique_ip_count
         )
 
     # app.py (inside your create_app function)

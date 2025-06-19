@@ -377,7 +377,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url_for('admin_dashboard') }}#alerts">
+                <a href="{{ url_for('live_attacks_dashboard') }}#alerts">
                     <span class="nav-icon">🔔</span> Alerts
                 </a>
             </li>
@@ -402,7 +402,7 @@
         <section class="stats-grid">
             <div class="stat-card">
                 <h3>UNIQUE IPs</h3>
-            <div class="stat-number" id="ips">{{ unique_ips | default(0) }}</div>
+            <div class="stat-number" id="ips">{{ unique_ip_count | default(0) }}</div>
             <div class="stat-card">
                 <h3>ALERTS</h3>
                 <div class="stat-number" id="alerts">{{ total_alerts | default(0) }}</div>
